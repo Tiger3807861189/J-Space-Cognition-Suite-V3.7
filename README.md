@@ -1,14 +1,14 @@
-# J-Space Cognition Suite V3.6
+# J-Space Cognition Suite V3.7
 
 [简体中文](README.zh-CN.md)
 
-[![DOI](https://zenodo.org/badge/1308234922.svg)](https://zenodo.org/badge/latestdoi/1308234922)
+[![Concept DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21971181.svg)](https://doi.org/10.5281/zenodo.21971181)
 
 J-Space Cognition Suite is a model-agnostic inference-time control system for deep reasoning, long-horizon work, tool use, verification, and recovery.
 
 It is packaged as a Skill for cross-platform use, selective loading, and low-friction integration.
 
-The suite organizes an agent's accessible working representations into a deliberately managed workspace. It operates through a single entry, nine selectively loaded modules, three supporting references, and an optional standard-library controller for durable task state.
+The suite organizes an agent's accessible working representations into a deliberately managed workspace. It operates through a single entry, nine selectively loaded modules, four supporting references, and an optional standard-library controller for durable task state.
 
 J-Space operates at inference time. Model weights and training remain unchanged.
 
@@ -41,7 +41,7 @@ Copy the following prompt into an agent that can access files and this repositor
 
 ```text
 Install J-Space Cognition Suite from
-https://github.com/Tiger3807861189/J-Space-Cognition-Suite-V3.6 into this environment's user-level Skills directory.
+https://github.com/Tiger3807861189/J-Space-Cognition-Suite-V3.7 into this environment's user-level Skills directory.
 
 First inspect the host configuration or documentation to locate the correct Skills directory. Install the complete j-space/ directory as j-space/, preserving SKILL.md, modules/, references/, and scripts/. If a j-space target already exists, compare it and ask before replacing anything. Run scripts/verify_suite.py with an available Python 3 interpreter after installation.
 
@@ -54,8 +54,7 @@ Invoke the Skill through the mechanism provided by your host—such as its Skill
 `/j-space`, `$j-space`, or a direct request:
 
 ```text
-Use j-space for this task. Audit this repository, preserve its architecture,
-verify every finding, and keep the work consistent across all affected files.
+Use j-space for this task. Audit this repository, preserve its architecture,verify every finding, and keep the work consistent across all affected files.
 ```
 
 The entry gate selects the lightest suitable pass automatically.
@@ -93,8 +92,8 @@ The mechanisms are selectively loaded. They are not a fixed checklist for every 
 |---|---|
 | `note --goal "..." --next "..."` | Open the ledger and define done plus the first action |
 | `note --next "..."` | Replace the single next action after a checkpoint or seam |
-| `note --core "..."` | Record a hub entry |
-| `note --core "..." --core-slot 1` | Swap a selected live hub entry |
+| `note --core "name — defining fact"` | Record a hub entry |
+| `note --core "name — defining fact" --core-slot 1` | Swap a selected live hub entry |
 | `note --check "..." --by "..."` | Append a checkpoint with verifier and coverage |
 | `note --open "..." --settled-by "..."` | Record a question and what would settle it |
 | `note --close N --check "..." --by "..."` | Close question `N` against a new recorded checkpoint |
@@ -104,7 +103,8 @@ The mechanisms are selectively loaded. They are not a fixed checklist for every 
 
 ```text
 <python-command> <skill-root>/scripts/jspace.py note --goal "what done means" --next "first action"
-<python-command> <skill-root>/scripts/jspace.py note --close 1 --check "what now holds" --by "verifier and coverage"
+<python-command> <skill-root>/scripts/jspace.py note --open "does the parser preserve state?" --settled-by "unit tests over all ledger sections and edge inputs"
+<python-command> <skill-root>/scripts/jspace.py note --close 1 --check "the parser preserves state" --by "unit tests over all ledger sections and edge inputs"
 <python-command> <skill-root>/scripts/jspace.py seam
 <python-command> <skill-root>/scripts/jspace.py ship OUTPUT_FILE
 <python-command> <skill-root>/scripts/jspace.py resume
@@ -118,44 +118,42 @@ An environment with a native Skill loader can install `j-space/` directly. For a
 
 Selected files should be retrieved on demand. Selective loading is part of the operating design.
 
-## Benchmarks
+## Benchmark
 
-All values use the native score of the corresponding benchmark; higher is better. `—` means that no result is reported. HLE is separated into no-tool and tool-enabled conditions.
+### 1. Main table
 
-### Evaluation context
+| Benchmark                | DeepSeek V4-Flash-Vision-Exp | DeepSeek V4-Flash-Vision-Exp **+ J-Space V3.7** | GLM-5.3 | Opus-4.8 | Fable 5 (w/ fallback) |
+| ------------------------ | ---------------------------: | ----------------------------------------------: | ------: | -------: | --------------------: |
+| HLE (w/o tools)          |                        *37.8 |                                        **37.8** |       — |     49.8 |                  53.3 |
+| HLE (w/ tools)           |                        *51.5 |                                        **51.9** |    62.5 |     57.9 |                  63.0 |
+| Terminal Bench 2.1       |                         83.9 |                                        **85.5** |    88.2 |     85.0 |                  88.0 |
+| NL2Repo                  |                         57.7 |                                        **60.4** |    58.0 |     69.7 |                     — |
+| CyberGym                 |                         75.3 |                                        **77.8** |    84.5 |     78.3 |                  83.1 |
+| DeepSWE                  |                         59.3 |                                        **61.8** |    66.9 |     58.0 |                  70.0 |
+| Toolathlon-Verified      |                         75.9 |                                        **77.4** |    73.0 |     76.2 |                  77.9 |
+| Agents' Last Exam        |                         27.3 |                                        **28.3** |    28.5 |     25.7 |                  23.8 |
+| AutomationBench (Public) |                         25.7 |                                        **27.6** |    48.2 |     27.2 |                  29.1 |
+| ***Average**             |                        56.99 |                                       **58.61** |   64.54 |    58.33 |                 62.13 |
 
-The J-Space evaluations on DeepSeek were configured with reference to the official DeepSeek Harness minimal-mode setup, with `max` reasoning effort, `temperature = 1.0`, and `top_p = 0.95`. J-Space participated across the inference-time workflow through workspace routing, state continuity,
-verification, and recovery.
+\* HLE scores were not disclosed and follow DeepSeek V4-Flash-0731. The average covers the 7 rows where all 5 columns have values.
 
-Results were collected within the project's available evaluation environment. Hardware conditions, process isolation, tool availability, and information-access boundaries form part of that context. J-Space tends to encourage more initiative and goal-directed exploration, making accessible artifacts and execution traces relevant to observed outcomes.
+### 2. Speed and token efficiency
 
-The table presents project-level benchmark records under these conditions. Comparator values retain the evaluation contexts published by their respective providers, and score variation across environments and harness configurations is expected. Source records include the [DeepSeek V4-Flash-0731 model card](https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731), [Z.ai](https://z.ai/)'s GLM-5.3 release-evaluation record, the [Kimi-K3 model card](https://huggingface.co/moonshotai/Kimi-K3), and Anthropic's [Claude Fable 5 & Claude Mythos 5 System Card](https://www-cdn.anthropic.com/2f9323abbcc4abe219577539efe19a623c9ca2bd/Claude%20Fable%205%20%26%20Claude%20Mythos%205%20System%20Card.pdf), which also reports its named comparator conditions.
+| Benchmark                | Wall-clock τ | Speedup | Output tokens | Total tokens | Accuracy multiplier | **Score per unit time** | Cost per successful task |
+| ------------------------ | -----: | ---: | ---------: | -------: | ---------: | ---------------: | -------------: |
+| HLE (w/o tools)          |  *1.02 |  −2% |       −10% |      +5% |      1.000 |        **0.98×** |            +5% |
+| HLE (w/ tools)           |   0.88 | +14% |       −22% |      +3% |      1.008 |        **1.15×** |            +2% |
+| Terminal Bench 2.1       |   0.79 | +27% |       −28% |      −3% |      1.019 |        **1.29×** |            −5% |
+| NL2Repo                  |   0.76 | +32% |       −31% |      −5% |      1.047 |        **1.38×** |            −9% |
+| CyberGym                 |   0.78 | +28% |       −28% |      −2% |      1.033 |        **1.32×** |            −5% |
+| DeepSWE                  |   0.78 | +28% |       −28% |      −3% |      1.042 |        **1.34×** |            −7% |
+| Toolathlon-Verified      |   0.86 | +16% |       −25% |      +2% |      1.020 |        **1.19×** |            +0% |
+| Agents' Last Exam        |   0.78 | +28% |       −28% |      −2% |      1.037 |        **1.33×** |            −5% |
+| AutomationBench (Public) |   0.76 | +32% |       −31% |      −5% |      1.074 |        **1.41×** |           −12% |
 
-### Model comparison
+\* For HLE (w/o tools) τ=1.02 is **intentionally positive** (i.e., slower): on single-turn tasks the Skill entry is a net overhead.
 
-| Benchmark | DeepSeek V4-Flash-0731 | DeepSeek V4-Flash-0731 + J-Space V3.6 | GLM-5.3 | Kimi-K3 | Opus-4.8 | Fable 5 (w/ fallback) |
-|---|---:|---:|---:|---:|---:|---:|
-| HLE (w/o tools) | 37.8 | 45.5 | — | 43.5 | 49.8 | 53.3 |
-| HLE (w/ tools) | 51.5 | 60.6 | 62.5 | 56.0 | 57.9 | 63.0 |
-| Terminal Bench 2.1 | 82.7 | 87.1 | 88.2 | 88.3 | 85.0 | 88.0 |
-| NL2Repo | 54.2 | 70.2 | 58.0 | 58.0 | 69.7 | — |
-| CyberGym | 76.7 | 81.7 | 84.5 | 80.0 | 78.3 | 83.1 |
-| DeepSWE | 54.4 | 67.4 | 66.9 | 67.5 | 58.0 | 70.0 |
-| Toolathlon-Verified | 70.3 | 77.7 | 73.0 | 76.5 | 76.2 | 77.9 |
-| Agents' Last Exam | 25.2 | 30.1 | 28.5 | 27.6 | 25.7 | 23.8 |
-| AutomationBench (Public) | 25.1 | 31.7 | 48.2 | 30.8 | 27.2 | 29.1 |
-
-### Efficiency
-
-These task-level indices retain the same task and model conditions and each records one evaluation run. Control is the matched baseline; J-Space is the corresponding suite-assisted condition. Speed is benchmark score divided by elapsed time, where higher is better. Token cost is consumed tokens divided by benchmark score, where lower is better. Elapsed time and token count use fixed, uniform scaling coefficients across both conditions. The coefficients affect the displayed scale while the within-metric improvement ratio remains comparable.
-
-| Metric | Control | J-Space | Improvement |
-|---|---:|---:|---:|
-| Speed (score/time; higher is better) | 0.43 | 1.09 | 2.53× |
-| Token cost (tokens/score; lower is better) | 2.63 | 1.19 | 2.21× |
-
-Related evaluation material:
-[DeepSeek V4 × J-Space Capability Realization Report](https://github.com/Tiger3807861189/DeepSeek-V4-J-Space-Capability-Realization-Report).
+**See: [DeepSeek V4 × J-Space Capability Realization Report](https://github.com/Tiger3807861189/DeepSeek-V4-J-Space-Capability-Realization-Report).**
 
 ## Cross-model compatibility
 
@@ -166,7 +164,7 @@ The portable unit is the protocol: workspace loading, selective routing, state e
 ## Project structure
 
 ```text
-J-Space-Cognition-Suite-V3.6/
+J-Space-Cognition-Suite-V3.7/
 ├── .github/workflows/verify.yml    # three-platform integrity and regression checks
 ├── CITATION.cff                    # machine-readable citation metadata
 ├── CONTRIBUTING.md                 # contribution and provenance requirements
@@ -178,7 +176,7 @@ J-Space-Cognition-Suite-V3.6/
 └── j-space/
     ├── SKILL.md                    # single entry, gate, routing, and invariants
     ├── modules/                    # nine selectively loaded protocols
-    ├── references/                 # evidence, induction, and worked exemplars
+    ├── references/                 # evidence, induction, problem modeling, and worked exemplars
     └── scripts/
         ├── jspace.py               # optional loop controller
         ├── workspace-ledger.md     # ledger template and contract
@@ -211,11 +209,12 @@ Use only the machinery the task earns.
 
 J-Space has progressed through:
 
-**V1 → V1.5 → V1.8 → V2 → V2.5 → V2.6 → V3 → V3.1 → V3.2 → V3.5 → V3.5Turbo → V3.6**
+**V1 → V1.5 → V1.8 → V2 → V2.5 → V2.6 → V3 → V3.1 → V3.2 → V3.5 → V3.5Turbo → V3.6 → V3.7**
 
-The V3.6 package contains one entry, nine focused modules, three supporting references, an optional runtime controller, an authoring-time verifier, standard-library regression tests, three-platform CI, Apache-2.0 licensing, and machine-readable citation metadata.
+The V3.7 package contains one entry, nine focused modules, four supporting references, an optional runtime controller, an authoring-time verifier, standard-library regression tests, three-platform CI, Apache-2.0 licensing, and machine-readable citation metadata.
+
+V3.7's problem-model routing incorporates the pull request opened by [@lanting200](https://github.com/lanting200), including commit contributions from [@afeer123](https://github.com/afeer123).
 
 ## License
 
 J-Space Cognition Suite is released under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). It permits use, modification, redistribution, and commercial integration under its notice and patent terms. See [`LICENSE`](LICENSE) for the complete terms. Quoted or summarized external source material remains subject to its source terms and is identified in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). When redistributing only the runtime `j-space/` directory, carry both root files with it.
-
