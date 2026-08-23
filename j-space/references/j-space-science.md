@@ -8,9 +8,10 @@ in language models* (anthropic.com/research/global-workspace), with invited comm
 Dehaene & Naccache; Butlin, Shiller, Plunkett & Long; and Nanda.
 
 It also carries a second evidence base — the *Claude Fable 5 / Mythos 5 System Card* section
-on **illegible reasoning**, the legibility literature (arXiv 2510.27338; 2509.15541;
-2501.12948; 1704.06960), the METR GPT-5 evaluation report, the LessWrong decoding analysis,
-and Anthropic's emotion-vector and introspection work.
+on **illegible reasoning**, a publicly posted competitive-programming trace reported as
+Fable 5 output, the legibility literature (arXiv 2510.27338; 2509.15541; 2501.12948;
+1704.06960), the METR GPT-5 evaluation report, the LessWrong decoding analysis, and Anthropic's
+emotion-vector and introspection work.
 
 This file is the shared factual ground for every module. Cite it whenever a protocol needs a
 mechanistic justification. Original English terminology is preserved deliberately: consistent
@@ -237,15 +238,25 @@ normal case rather than the exception.
 
 ### 10.1 The trace and the system card
 
-- The normalized dense chain in `exemplars.md` is a suite-authored teaching example, not primary
-  evidence. It uses generic capacity and interval notation to expose the structure that the
-  sourced records motivate.
+- A [Reddit post by
+  u/No-Head-Royal](https://www.reddit.com/r/ClaudeAI/comments/1ul1396/fable_5_leaked_chainofthought_in_web_interface/)
+  publicly presents screenshots that the poster identifies as Fable 5 working on
+  [Codeforces 2239D](https://codeforces.com/contest/2239/problem/D). The selected trace is not
+  clean English and not noise: it is dense shorthand mixing symbols (`window [τ,i−1]`,
+  `used[j] ≤ m−2`, `e ∈ S_0`), operators (`⇒ ⊆ ∪ ∩ ∋ ✓ ✗`), epistemic punctuation (`??`,
+  `?!`), state words (`FULL`, `BLOCKED`, `FREE`), and stage markers.
+- This is a publicly documented, poster-attributed trace artifact with an inspectable source.
+  It supports existence claims about the structures visible in the screenshots; it does not
+  independently establish the model attribution, frequency, or a causal mechanism. Anthropic's
+  system-card sample remains a separate official evidence stream.
+  `exemplars.md` §9 transcribes selected lines and labels the adjacent expansions and
+  bookkeeping as suite-authored.
 - The Fable 5 / Mythos 5 System Card documents **illegible reasoning** in long RL rollouts:
   invented jargon, unusual punctuation, and emojis can appear during extended reasoning before
   the model returns to ordinary language around tool calls or human-facing responses. Its
   FreeCell example uses suit symbols, arrows, skull emojis, a German curse (**verdammt**) and a
   final **AAAAAAAAAAAARGH**.
-- The full FreeCell transcript adds devices not visible in the normalized capacity rehearsal,
+- The full FreeCell transcript adds devices not visible in the competition trace,
   and they are worth cataloguing because they are the register's actual grammar:
   **hyphen-glue** welding whole clauses into one indivisible run
   (`7♣-removal-IS-the-prerequisite-for-10♠/9♥!!`); **`⟸`** for *because / follows from*
@@ -374,9 +385,9 @@ measurable gain sits, and it is where models currently fail.
   giving the limit somewhere to act.
 
 Design consequence for this suite: every monitoring reading must select an action. An estimate
-that selects nothing was a comment, not a monitoring act. This is the single largest documented
-gain available to anything shaped like a skill, and it is not an imported technique — it is the
-second half of C2, which the suite already had the first half of.
+that selects nothing was a comment, not a monitoring act. This is a substantial documented gain
+from a skill-shaped control interface, and it is not an imported technique — it is the second
+half of C2, which the suite already had the first half of.
 
 ## 12c. Long-horizon degradation — a context problem, not a reasoning problem
 
@@ -475,6 +486,10 @@ part of the content.
 - Anthropic, [*Claude Fable 5 & Claude Mythos 5 System
   Card*](https://www-cdn.anthropic.com/2f9323abbcc4abe219577539efe19a623c9ca2bd/Claude%20Fable%205%20%26%20Claude%20Mythos%205%20System%20Card.pdf),
   2026 (illegible-reasoning analysis).
+- u/No-Head-Royal, [*Fable 5 leaked chain-of-thought in web interface, and the rambling is kind
+  of unsettling and cute*](https://www.reddit.com/r/ClaudeAI/comments/1ul1396/fable_5_leaked_chainofthought_in_web_interface/),
+  Reddit, July 2026 (publicly posted screenshots reported as Fable 5 working
+  [Codeforces 2239D](https://codeforces.com/contest/2239/problem/D)).
 - faul_sname, [*Even "illegible" Mythos reasoning traces seem pretty
   legible*](https://www.lesswrong.com/posts/wCSEpT3dTGz4N86Wi/even-illegible-mythos-reasoning-traces-seem-pretty-legible),
   LessWrong, June 2026 (including the Haiku 4.5 translation experiment).
