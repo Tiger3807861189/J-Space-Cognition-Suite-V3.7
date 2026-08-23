@@ -3,13 +3,11 @@
 # Format: Citation File Format 1.2.0 (https://citation-file-format.github.io/)
 
 cff-version: 1.2.0
-message: "If you use J-Space in your research, please cite the accompanying paper (link to be added upon publication). For engineering use, cite this repository as follows."
-title: "J-Space Cognition Suite V3.6"
+message: "If you use J-Space in research, please cite this software and use the concept DOI below. Cite a fixed release DOI when a matching V3.7 archive is published."
+title: "J-Space Cognition Suite V3.7"
 authors:
   - name: "Tiger3807861189"
-date-released: "2026-08-17"
-version: "3.6"
-doi: "10.5281/zenodo.21977271"
+version: "3.7"
 identifiers:
   - type: doi
     value: "10.5281/zenodo.21971181"
@@ -23,8 +21,8 @@ keywords:
   - "global workspace"
   - "dsh-plugin"
   - "skill"
-url: "https://github.com/Tiger3807861189/J-Space-Cognition-Suite-V3.6"
-repository-code: "https://github.com/Tiger3807861189/J-Space-Cognition-Suite-V3.6"
+url: "https://github.com/Tiger3807861189/J-Space-Cognition-Suite-V3.7"
+repository-code: "https://github.com/Tiger3807861189/J-Space-Cognition-Suite-V3.7"
 abstract: >-
   A model-agnostic inference-time control suite for deep reasoning,
   long-horizon work, tool use, verification, and recovery. Based on
