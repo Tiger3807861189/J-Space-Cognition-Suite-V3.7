@@ -182,9 +182,10 @@ The point of the fold is that the main thread never has to carry the excursion's
 
 ### COMPRESSION AS CAPACITY — the multiplier and its limit
 
-1. Compression genuinely multiplies the bottleneck. A constraint block in notation —
-   `load[j] ≤ limit−reserve; active [last_touch,i); ✓ verified` — carries what a paragraph
-   cannot hold at once.
+1. Compression genuinely multiplies the bottleneck. A constraint block built from the
+   [publicly posted trace reported as Fable 5 output on Codeforces
+   2239D](https://www.reddit.com/r/ClaudeAI/comments/1ul1396/fable_5_leaked_chainofthought_in_web_interface/) —
+   `used[j] ≤ m−2; window [τ,i−1]; ✓ verified` — carries what a paragraph cannot hold at once.
 2. **Only decodable compression counts as capacity.** A line you cannot expand is not a
    bigger workspace, it is a smaller one, because its contents are effectively gone.
 3. Compression never substitutes for admission judgement. The gate decides *what* enters.
