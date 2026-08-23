@@ -48,10 +48,11 @@ compression bought.
 - The behaviour is documented, and so is its containment: over long rollouts *"the model
   starts using invented jargon, unusual punctuation and emojis; shortly before a tool call or
   responding to a human it typically switches back to a more normal register."*
-- The suite-authored normalized capacity rehearsal is neither clean English nor noise. It is
-  dense shorthand: `active [last_touch,i)`, `load[j] ≤ limit−reserve`,
-  `existing ∈ stage0`, `⇒ contradiction ⇒`, `✓ ✓`, `✗✗ EXCEEDS!!!`, `FULL`,
-  `blocked?! WRONG.` — and it expands into a clean answer.
+- The [publicly posted trace reported as Fable 5 output on Codeforces
+  2239D](https://www.reddit.com/r/ClaudeAI/comments/1ul1396/fable_5_leaked_chainofthought_in_web_interface/)
+  is neither clean English nor noise. It is dense shorthand: `window [τ,i−1]`,
+  `used[j] ≤ m−2`, `e ∈ S_0`, `⇒ contradiction ⇒`, `✓ ✓`, `✗✗ EXCEEDS!!!`, `FULL`,
+  `blocked?! WRONG.` — and the reported outer answer stays clean.
 - **Compression is load-bearing.** Across fourteen reasoning models, forcing a model to use
   only the legible portions of its chain cuts accuracy by **53%**. Legibility degrades further
   as problems get harder — pressure produces density.
