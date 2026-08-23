@@ -1,14 +1,14 @@
-# J-Space Cognition Suite V3.6
+# J-Space Cognition Suite V3.7
 
 [English](README.md)
 
-[![DOI](https://zenodo.org/badge/1308234922.svg)](https://zenodo.org/badge/latestdoi/1308234922)
+[![Concept DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21971181.svg)](https://doi.org/10.5281/zenodo.21971181)
 
 J-Space Cognition Suite 是一套面向深度推理、长程工作、工具调用、验证与恢复的模型不可知推理时控制系统。
 
 它以 Skill 形式封装，从而支持跨平台使用、选择性加载与低摩擦集成。
 
-套件将智能体可访问的工作表征组织为一个可主动管理的工作空间。整体由一个入口、九个按需加载的模块、三份支撑资料，以及一个用于保存长任务状态的可选标准库控制器组成。
+套件将智能体可访问的工作表征组织为一个可主动管理的工作空间。整体由一个入口、九个按需加载的模块、四份支撑资料，以及一个用于保存长任务状态的可选标准库控制器组成。
 
 J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 
@@ -40,7 +40,7 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 把下面的提示词复制给能够访问文件和本仓库的 AI 智能体：
 
 ```text
-请从以下仓库安装 J-Space Cognition Suite：https://github.com/Tiger3807861189/J-Space-Cognition-Suite-V3.6
+请从以下仓库安装 J-Space Cognition Suite：https://github.com/Tiger3807861189/J-Space-Cognition-Suite-V3.7
 
 请先检查当前宿主的配置或文档，确认用户级 Skills 目录。将仓库中的完整 j-space/ 目录安装为 j-space/，并保持 SKILL.md、modules/、references/ 和 scripts/ 的相对结构。如果目标位置已经存在 j-space，请先比较并询问我，再执行替换。
 
@@ -52,8 +52,7 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 通过宿主提供的 Skill 选择器、`/j-space`、`$j-space`，或者直接要求 AI 使用：
 
 ```text
-请在这个任务中使用 j-space。审查这个仓库，保持现有架构，逐项验证发现，
-并在所有受影响文件之间维持一致状态。
+请在这个任务中使用 j-space。审查这个仓库，保持现有架构，逐项验证发现，并在所有受影响文件之间维持一致状态。
 ```
 
 入口门控会自动选择适合当前任务的最轻 pass。
@@ -91,8 +90,8 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 |---|---|
 | `note --goal "..." --next "..."` | 打开账本，定义完成条件和第一个动作 |
 | `note --next "..."` | 在 checkpoint 或 seam 后替换唯一的下一动作 |
-| `note --core "..."` | 记录一个枢纽项 |
-| `note --core "..." --core-slot 1` | 交换指定的活动枢纽项 |
+| `note --core "名称 — 定义性事实"` | 记录一个枢纽项 |
+| `note --core "名称 — 定义性事实" --core-slot 1` | 交换指定的活动枢纽项 |
 | `note --check "..." --by "..."` | 追加包含验证方式与覆盖范围的 checkpoint |
 | `note --open "..." --settled-by "..."` | 记录开放问题和收束条件 |
 | `note --close N --check "..." --by "..."` | 以新记录的 checkpoint 关闭编号为 `N` 的问题 |
@@ -102,7 +101,8 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 
 ```text
 <python-command> <skill-root>/scripts/jspace.py note --goal "完成条件" --next "第一个动作"
-<python-command> <skill-root>/scripts/jspace.py note --close 1 --check "当前成立的结论" --by "验证方式与覆盖范围"
+<python-command> <skill-root>/scripts/jspace.py note --open "解析器是否保持状态？" --settled-by "覆盖全部账本区段与边界输入的单元测试"
+<python-command> <skill-root>/scripts/jspace.py note --close 1 --check "解析器保持状态" --by "单元测试覆盖全部账本区段与边界输入"
 <python-command> <skill-root>/scripts/jspace.py seam
 <python-command> <skill-root>/scripts/jspace.py ship OUTPUT_FILE
 <python-command> <skill-root>/scripts/jspace.py resume
@@ -118,41 +118,40 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 
 ## Benchmark
 
-所有数值均采用对应 Benchmark 的原生得分，数值越高越好。`—` 表示没有报告结果。HLE 分为无工具与启用工具两种条件。
+### 1. 主表
 
-### 评测上下文
+| Benchmark                | DeepSeek V4-Flash-Vision-Exp | DeepSeek V4-Flash-Vision-Exp **+ J-Space V3.7** | GLM-5.3 | Opus-4.8 | Fable 5 (w/ fallback) |
+| ------------------------ | ---------------------------: | ----------------------------------------------: | ------: | -------: | --------------------: |
+| HLE (w/o tools)          |                        *37.8 |                                        **37.8** |       — |     49.8 |                  53.3 |
+| HLE (w/ tools)           |                        *51.5 |                                        **51.9** |    62.5 |     57.9 |                  63.0 |
+| Terminal Bench 2.1       |                         83.9 |                                        **85.5** |    88.2 |     85.0 |                  88.0 |
+| NL2Repo                  |                         57.7 |                                        **60.4** |    58.0 |     69.7 |                     — |
+| CyberGym                 |                         75.3 |                                        **77.8** |    84.5 |     78.3 |                  83.1 |
+| DeepSWE                  |                         59.3 |                                        **61.8** |    66.9 |     58.0 |                  70.0 |
+| Toolathlon-Verified      |                         75.9 |                                        **77.4** |    73.0 |     76.2 |                  77.9 |
+| Agents' Last Exam        |                         27.3 |                                        **28.3** |    28.5 |     25.7 |                  23.8 |
+| AutomationBench (Public) |                         25.7 |                                        **27.6** |    48.2 |     27.2 |                  29.1 |
+| ***均分**                |                        56.99 |                                       **58.61** |   64.54 |    58.33 |                 62.13 |
 
-在 DeepSeek 上评测 J-Space 时，评测配置参照官方 Harness 极简模式，采用 `max` reasoning effort、`temperature = 1.0` 与 `top_p = 0.95`。J-Space 通过工作空间路由、状态连续性、验证与恢复参与完整的推理时运行流程。
+\* HLE 数据未披露，沿用 DeepSeek V4-Flash-0731。均分覆盖 5 列均有值的 7 行。
 
-结果形成于项目现有的评测环境。硬件条件、进程隔离、工具可用性与信息访问边界共同构成评测上下文。J-Space 倾向于增强模型的主动性与目标导向探索，因此，可访问资料及执行轨迹也可能影响观测结果。
+### 2. 速度与 token 效率
 
-表格汇总了上述条件下的项目级 Benchmark 记录。其他模型的数据保留各厂商公开评测时的原有上下文，不同环境与 Harness 配置下出现分数变化属于正常现象。数据来源包括[DeepSeek V4-Flash-0731 模型卡](https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731)、[智谱 AI](https://z.ai/) 的 GLM-5.3 发布评测记录、[Kimi-K3 模型卡](https://huggingface.co/moonshotai/Kimi-K3)，以及 Anthropic 的[Claude Fable 5 与 Claude Mythos 5 系统卡](https://www-cdn.anthropic.com/2f9323abbcc4abe219577539efe19a623c9ca2bd/Claude%20Fable%205%20%26%20Claude%20Mythos%205%20System%20Card.pdf)。
+| Benchmark                | 墙钟 τ | 提速 | 输出 token | 总 token | 准确率倍率 | **单位时间得分** | 每成功任务成本 |
+| ------------------------ | -----: | ---: | ---------: | -------: | ---------: | ---------------: | -------------: |
+| HLE (w/o tools)          |  *1.02 |  −2% |       −10% |      +5% |      1.000 |        **0.98×** |            +5% |
+| HLE (w/ tools)           |   0.88 | +14% |       −22% |      +3% |      1.008 |        **1.15×** |            +2% |
+| Terminal Bench 2.1       |   0.79 | +27% |       −28% |      −3% |      1.019 |        **1.29×** |            −5% |
+| NL2Repo                  |   0.76 | +32% |       −31% |      −5% |      1.047 |        **1.38×** |            −9% |
+| CyberGym                 |   0.78 | +28% |       −28% |      −2% |      1.033 |        **1.32×** |            −5% |
+| DeepSWE                  |   0.78 | +28% |       −28% |      −3% |      1.042 |        **1.34×** |            −7% |
+| Toolathlon-Verified      |   0.86 | +16% |       −25% |      +2% |      1.020 |        **1.19×** |            +0% |
+| Agents' Last Exam        |   0.78 | +28% |       −28% |      −2% |      1.037 |        **1.33×** |            −5% |
+| AutomationBench (Public) |   0.76 | +32% |       −31% |      −5% |      1.074 |        **1.41×** |           −12% |
 
-### 模型对比
+\* HLE (w/o tools) 的 τ=1.02 是**有意为正**（即变慢）：单轮任务上技能条目是净开销。
 
-| Benchmark | DeepSeek V4-Flash-0731 | DeepSeek V4-Flash-0731 + J-Space V3.6 | GLM-5.3 | Kimi-K3 | Opus-4.8 | Fable 5（含 fallback） |
-|---|---:|---:|---:|---:|---:|---:|
-| HLE（无工具） | 37.8 | 45.5 | — | 43.5 | 49.8 | 53.3 |
-| HLE（有工具） | 51.5 | 60.6 | 62.5 | 56.0 | 57.9 | 63.0 |
-| Terminal Bench 2.1 | 82.7 | 87.1 | 88.2 | 88.3 | 85.0 | 88.0 |
-| NL2Repo | 54.2 | 70.2 | 58.0 | 58.0 | 69.7 | — |
-| CyberGym | 76.7 | 81.7 | 84.5 | 80.0 | 78.3 | 83.1 |
-| DeepSWE | 54.4 | 67.4 | 66.9 | 67.5 | 58.0 | 70.0 |
-| Toolathlon-Verified | 70.3 | 77.7 | 73.0 | 76.5 | 76.2 | 77.9 |
-| Agents' Last Exam | 25.2 | 30.1 | 28.5 | 27.6 | 25.7 | 23.8 |
-| AutomationBench（Public） | 25.1 | 31.7 | 48.2 | 30.8 | 27.2 | 29.1 |
-
-### 效率
-
-以下任务级指标保持相同的任务与模型条件，每项记录对应一次评测运行。Control 表示匹配的基线条件，J-Space 表示相应的套件辅助条件。速度为 Benchmark 得分除以耗时，数值越高越好；Token 成本为消耗 Token 数除以 Benchmark 得分，数值越低越好。两种条件下的耗时和 Token 数采用固定且统一的系数缩放；该系数影响展示尺度，同一指标内的改进比率仍可直接比较。
-
-| 指标 | Control | J-Space | 改进比率 |
-|---|---:|---:|---:|
-| 速度（得分/时间，越高越好） | 0.43 | 1.09 | 2.53× |
-| Token 成本（Token/得分，越低越好） | 2.63 | 1.19 | 2.21× |
-
-相关评测材料：
-[DeepSeek V4 × J-Space 能力释放报告](https://github.com/Tiger3807861189/DeepSeek-V4-J-Space-Capability-Realization-Report)。
+**详见：[DeepSeek V4 × J-Space 能力释放报告](https://github.com/Tiger3807861189/DeepSeek-V4-J-Space-Capability-Realization-Report)。**
 
 ## 跨模型兼容性
 
@@ -163,7 +162,7 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 ## 项目结构
 
 ```text
-J-Space-Cognition-Suite-V3.6/
+J-Space-Cognition-Suite-V3.7/
 ├── .github/workflows/verify.yml    # 三平台完整性检查和回归测试
 ├── CITATION.cff                    # 机器可读的引用元数据
 ├── CONTRIBUTING.md                 # 贡献与来源说明要求
@@ -175,7 +174,7 @@ J-Space-Cognition-Suite-V3.6/
 └── j-space/
     ├── SKILL.md                    # 唯一入口、门控、路由与 invariants
     ├── modules/                    # 九个按需加载的协议模块
-    ├── references/                 # 证据、诱导方法与工作示例
+    ├── references/                 # 证据、诱导方法、问题建模与工作示例
     └── scripts/
         ├── jspace.py               # 可选 loop 控制器
         ├── workspace-ledger.md     # 账本模板和契约
@@ -208,9 +207,11 @@ J-Space 采用 Anthropic 相关可解释性研究建立的操作性工作空间�
 
 J-Space 已连续经历：
 
-**V1 → V1.5 → V1.8 → V2 → V2.5 → V2.6 → V3 → V3.1 → V3.2 → V3.5 → V3.5Turbo → V3.6**
+**V1 → V1.5 → V1.8 → V2 → V2.5 → V2.6 → V3 → V3.1 → V3.2 → V3.5 → V3.5Turbo → V3.6 → V3.7**
 
-V3.6 套件包含一个入口、九个聚焦模块、三份支撑资料、一个可选运行控制器、一个编写期验证器、一套标准库回归测试、三平台 CI、Apache-2.0 许可和机器可读引用元数据。
+V3.7 套件包含一个入口、九个聚焦模块、四份支撑资料、一个可选运行控制器、一个编写期验证器、一套标准库回归测试、三平台 CI、Apache-2.0 许可和机器可读引用元数据。
+
+V3.7 的问题模型路由吸收了由 [@lanting200](https://github.com/lanting200) 发起的 PR ，并包含 [@afeer123](https://github.com/afeer123) 的提交贡献。
 
 ## 开源协议
 
