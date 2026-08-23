@@ -25,10 +25,14 @@ inside, decodable on demand.
 
 ## Grounding
 
-- The suite-authored normalized rehearsal carries the whole manoeuvre in order: admit
-  `I'M DROWNING — EMPIRICS!!!`; define the uncertain parameter conservatively; compare each
-  candidate rule against an independent reference; study any mismatch; then write the final
-  artifact with its slow reference. Each state change binds directly to the next action.
+- In the [publicly posted trace reported as Fable 5 output on Codeforces
+  2239D](https://www.reddit.com/r/ClaudeAI/comments/1ul1396/fable_5_leaked_chainofthought_in_web_interface/),
+  the whole manoeuvre appears in order. Drowning admitted: *"I'M DROWNING — EMPIRICS!!! Let me
+  define v1 conservatively…"* Unknown parametrized: *"Let me parametrize: CHECK:
+  max(used[window]) + take ≤ CAP with CAP ∈ {m−1, m−2} and compare both against brute."* Method
+  declared: *"I'M GOING TO TRUST-AND-VERIFY: implement the greedy with rule […], WITHOUT explicit
+  (b), and see if it matches brute force. If mismatches appear, study them and refine."* Closure
+  planned: *"After exploration, write final sol.cpp + a slow-reference cpp."*
 - Externalization is what makes this work. Written chains survive workspace ablation because
   the page carries what the silent track cannot. The interpreter carries even more: it does
   not merely remember your reasoning, it can contradict it.
@@ -45,7 +49,8 @@ inside, decodable on demand.
   satisfied. Measuring is what separates *finished* from *assumed finished*.
 - And the reference has to be independent to be worth anything. A "brute force" that inherits
   the candidate's cleverness inherits its bug, and then the two agree beautifully while both
-  being wrong.
+  being wrong. Independence also includes the task model: two procedures that encode the same
+  unresolved reading can agree while answering the wrong question.
 
 ## Drills
 
@@ -95,9 +100,11 @@ being derived a fourth time.
 1. **Build the reference.** Use the simplest independent procedure whose assumptions are
    explicit and separately checked — brute force, exhaustive enumeration, small cases worked
    by hand. Treat it as fallible evidence, never as an oracle.
-2. **The reference must not share the candidate's cleverness.** If it inherits the same
-   assumption, it will inherit the same bug and agree with it beautifully. Where they must
-   share an assumption, test that assumption separately and say so.
+2. **The reference must not share the candidate's cleverness or an unresolved reading.** If
+   it inherits the same assumption, it will inherit the same bug and agree with it beautifully.
+   Where they must share an assumption, test that assumption separately and say so. If two
+   plausible task models remain open, return to `../references/problem-model.md`; measurement
+   inside one model cannot select it.
 3. **State the candidate:** the fast, clever, or compact version you actually want to trust.
 4. **Differential-test.** Same inputs to both. Compare outputs. Sweep small cases, edge cases
    — empty, single, maximum, degenerate — and randomized cases wherever they are cheap.
@@ -124,6 +131,9 @@ being derived a fourth time.
 - **Fallible reference.** The "brute force" contains the same cleverness, and therefore the
   same bug, as the candidate. Remedy: make the reference independent, expose its assumptions,
   and check those assumptions separately.
+- **Model-locked reference.** Candidate and reference encode the same unresolved reading, so
+  agreement verifies execution but not task interpretation. Remedy: close the fork in
+  `../references/problem-model.md`, then test the weakest claim inside the surviving model.
 - **Shallow sweep.** Three easy cases pass and the thing is declared verified. Remedy: edge
   cases and randomized cases are part of the protocol, and the coverage is stated with the
   conclusion.
@@ -145,4 +155,5 @@ being derived a fourth time.
 | The chain resumes | `deep-reasoning.md` | The written-back constraint |
 | The test ledger has grown | `capacity.md` | What is still open |
 | A verification discipline was cut short | `self-monitoring.md` | What was skipped, plainly |
+| Candidate and reference agree while a task interpretation remains open | `../references/problem-model.md` | The readings and the evidence that could distinguish them |
 | You want the manoeuvre in its original form | `../references/exemplars.md` | The unknown you are parametrizing |
