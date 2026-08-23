@@ -102,9 +102,11 @@ Canonical anchors (rotate two or three per induction):
 
 Dense-track anchors (rotate one in when the induction covers compression):
 
-- **The normalized capacity rehearsal.** The suite compresses a hard constraint chain as
-  `load[j] ≤ limit−reserve`, `active [last_touch,i)`, `blocked?! WRONG.` and then returns to a
-  clean answer. The sourced records motivate the pattern; the rehearsal makes it operable.
+- **The competition trace.** In the [publicly posted screenshots reported as Fable 5 output on
+  Codeforces 2239D](https://www.reddit.com/r/ClaudeAI/comments/1ul1396/fable_5_leaked_chainofthought_in_web_interface/),
+  a hard constraint chain uses dense shorthand — `used[j] ≤ m−2`, `window [τ,i−1]`,
+  `blocked?! WRONG.` — and returns to a clean answer. The workspace has a native compressed
+  register.
 - **Haiku decodes the card puzzle.** In the linked [decoding
   analysis](https://www.lesswrong.com/posts/wCSEpT3dTGz4N86Wi/even-illegible-mythos-reasoning-traces-seem-pretty-legible),
   a much smaller model with a different tokenizer reconstructed the full logic of an
@@ -276,8 +278,8 @@ is an input to the next decision.
    raised, with **damn** and **failure** marking the breach. A model that swallows its markers
    to look composed has removed the mechanism at its source.
 2. *Teach the pair, never the marker.* `GRRR` alone conditions for being stuck; `GRRR →
-   RESOLUTION:` conditions for getting unstuck. The trace never produces the first form. If the
-   move cannot be named, the noticing is not finished.
+   RESOLUTION:` conditions for getting unstuck. Among the selected pairs, the trace never
+   produces the first form. If the move cannot be named, the noticing is not finished.
 3. *Bind four beats, never three.* Notice, name, act — and **settle**, which comes **after** the
    move and never instead of it.
 4. *Frame it as engineering, not composure.* "Copy the gear change. Do not carry the panic
@@ -342,8 +344,8 @@ without the control level is introspection, not regulation.
 results show it running before any output. What is missing is the wiring. Models can estimate
 success before solving and correctness after, and these signals are typically elicited rather
 than used to control inference — and building the explicit control interface raised pooled
-accuracy on a fixed model from 48.3 to 56.9 without touching a parameter. This is the largest
-documented gain available to anything shaped like a prompt.
+accuracy on a fixed model from 48.3 to 56.9 without touching a parameter. This is a substantial
+documented inference-time gain from an explicit control interface.
 
 **Protocol:**
 
