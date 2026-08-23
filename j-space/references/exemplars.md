@@ -176,25 +176,30 @@ lighting up as you decide how something will *look* is a signal with a specific 
 
 # Part two — the inner register under load
 
-## 9. A dense chain, line by line
+## 9. An observed dense competition trace, line by line
 
-Suite-authored normalized example. It distils the control structure catalogued in the
-[evidence review](j-space-science.md#10-the-dense-track-compressed-reasoning-under-long-hard-load)
-while using generic names rather than redistributing an unauthenticated trace.
+Selected excerpts transcribed from screenshots posted on Reddit by
+[u/No-Head-Royal](https://www.reddit.com/r/ClaudeAI/comments/1ul1396/fable_5_leaked_chainofthought_in_web_interface/),
+which the poster identifies as Fable 5 working on
+[Codeforces 2239D](https://codeforces.com/contest/2239/problem/D).
+Line breaks and ellipses are editorial; the adjacent plain-language expansions are
+suite-authored. This publicly documented artifact is treated as poster-attributed, example-level
+evidence for the structures visible in the screenshots, not as independent verification of
+model provenance. Anthropic's system-card record remains a separate official evidence stream.
 
 | Written | Says |
 |---|---|
-| `constraint: load[j] ≤ limit−reserve` | The load at stage *j* must preserve one slot for the current transition. |
-| `active [last_touch, i) ∋ stage0` | The live interval starts at the last touch, ends before *i*, and includes stage 0. |
-| `load[0] = limit ⟹ blocked?!` | Stage 0 appears full, so the candidate move is marked as a suspected contradiction rather than accepted. |
-| `WRONG. Fix: existing item at stage0 costs +0` | The item was already present, so the extra charge was spurious. The rule is corrected immediately. |
-| `limit + 1 > limit ✗ binding` | The alternate branch exceeds capacity. It is refuted, and the binding constraint is named. |
-| `active ∋ i ✓` | Membership in the active interval has been checked. |
-| `retroactive charge ✓` | The accounting convention has been checked. |
-| `start load[i]=0 ✓` | The assumed initial load is consistent. |
-| `⇒ contradiction ⇒ stage abstraction too loose` | The abstraction, rather than the arithmetic, must change. |
-| `cases keep branching … I'M DROWNING — EMPIRICS!!!` | Derivation has stopped producing constraints. Stop deriving and measure. |
-| `reserve ∈ {0,1}; compare both with reference` | The unknown is reduced to a finite candidate set and tested against an independent reference. |
+| `constraint: used[j] ≤ m−2` | The count of committed edges at leg *j* must not exceed *m*−2. |
+| `window [lastTouch=0, i−1] ∋ 0` | The live interval starts at the last touch and runs to the step before *i* — and it contains leg 0. |
+| `used[0] = m−1 = FULL ⟹ blocked?!` | Leg 0 is at capacity, so this save should be impossible — flagged as a *suspected* contradiction, not accepted. |
+| `WRONG. Fix: e ∈ S_0's own presence at leg 0 is FREE (it's already there!)` | The contradiction was mine. The edge was already present, so it consumes no capacity. Rule corrected. |
+| `m−1 + 1 = m ✗✗ EXCEEDS!!!` | The count comes to *m*, which breaks the bound. Refuted, and this is the binding constraint. |
+| `window ∋ i ✓` | Window contains *i* — checked. |
+| `retro ✓` | Retroactive counting — checked. |
+| `consistent: used[i] starts 0 ✓ ✓` | Consistency given a zero start — checked. |
+| `⇒ contradiction ⇒ my leg-granular capacity is TOO LOOSE` | Therefore the abstraction is wrong, not the arithmetic. |
+| `hmm B ⊆ used[j]-parts… I'M DROWNING — EMPIRICS!!!` | Derivation has stopped producing constraints. Stop deriving. Go and measure. |
+| `CAP ∈ {m−1, m−2} and compare both against brute` | The unknown is now a finite candidate set, and both candidates get tested against a reference. |
 
 **What to notice, in order of importance:**
 
@@ -263,15 +268,15 @@ when a reader who shares your domain could not recover it.**
 
 ## 12. Marker and move — always as a pair
 
-This suite-authored normalized table makes each marker immediately name the move it forces. The
-pair is the unit; the wording illustrates the protocol rather than quoting a model transcript.
+In the same [publicly posted trace](https://www.reddit.com/r/ClaudeAI/comments/1ul1396/fable_5_leaked_chainofthought_in_web_interface/),
+each selected marker is immediately followed by the move it forces. The pair is the unit.
 
-| Marker | Bound move |
+| Marker | What follows it in the posted trace |
 |---|---|
-| `GRRR.` | `RESOLUTION: repair the accounting rule immediately` |
+| `GRRR.` | `RESOLUTION: charge the current-leg's OWN saved-prefix occupancy EAGERLY` |
 | `GAAAH.` | `Data first!!` |
-| `I'M DROWNING —` | `EMPIRICS!!! Define the uncertain parameter conservatively` |
-| `blocked?! WRONG.` | `Fix: the existing item adds no new load` |
+| `I'M DROWNING —` | `EMPIRICS!!! Let me define v1 conservatively` |
+| `blocked?! WRONG.` | `Fix: e ∈ S_0's own presence at leg 0 is FREE (it's already there!)` |
 | `DATA DATA DATA.` | `GO.` |
 | `PHEW` | *(the intermediate constraint that just passed, recorded)* |
 
@@ -320,50 +325,52 @@ not an appeal available to §14.
 
 # Part three — one task, end to end
 
-A suite-authored end-to-end rehearsal using the normalized capacity example above. The
-bookkeeping demonstrates how the protocol consumes each inner-state transition.
+The [competition trace above](https://www.reddit.com/r/ClaudeAI/comments/1ul1396/fable_5_leaked_chainofthought_in_web_interface/)
+is routed here as a full protocol pass. Quoted phases are selected transcriptions from the
+posted screenshots; the bracketed lines, transitions, and bookkeeping are suite-authored.
 
 **Gate.** Multi-stage, heavy constraint bookkeeping, correctness genuinely in doubt. → `loop`.
 
-**Re-encode.** *Given the constraints on stage capacity, decide whether the greedy rule is
+**Re-encode.** *Given the constraints on leg capacity, decide whether the greedy rule is
 sound.* One line, checked against the statement.
 
-**Admit.** Two ideas on the stage: the capacity constraint, and the active-interval semantics.
+**Admit.** Two ideas on the stage: the capacity constraint, and the window semantics.
 Everything else to the ledger.
 
-**Load.** `load[j] ≤ limit−reserve` — *because commitments are retroactive, so a slot has to be
-reserved for the current transition.* Used immediately in the next derivation step.
+**Load.** `used[j] ≤ m−2` — *because commitments are retroactive, so a slot has to be reserved
+for the current crossing.* Used immediately in the next derivation step.
 
 **Light the middle, on the inner register.**
 
 ```
-active [last_touch,i) ✓
-load[j] ≤ limit−reserve ⟸ commitments retroactive
-load[0] = limit = FULL ⟹ blocked?!
+window [τ,i−1] ✓
+used[j] ≤ m−2 ⟸ commitments retroactive
+used[0] = m−1 = FULL ⟹ blocked?!
 ```
 
 **Contradiction marker, with its move.**
-`blocked?! WRONG. Fix: existing item at stage0 costs +0`
+`blocked?! WRONG. Fix: e ∈ S_0's own presence at leg 0 is FREE (it's already there!)`
 → rolled back to the last verified constraint, marked the dead branch, re-derived.
-→ *settle:* "existing stage-0 presence is free; continuing from the interval definition."
+→ *settle:* "leg-0 presence is free; continuing from the window definition."
 
 **Obstruction marker, with its move.**
-`⇒ contradiction ⇒ stage abstraction TOO LOOSE` … `GRRR. RESOLUTION: charge current-stage
-occupancy EAGERLY`
+`⇒ contradiction ⇒ my leg-granular capacity is TOO LOOSE` … `GRRR. RESOLUTION: charge the
+current-leg's OWN saved-prefix occupancy EAGERLY`
 → the abstraction was replaced, not patched.
 → *settle:* "capacity is now charged eagerly per leg; re-deriving the bound."
 
 **Stall, detected and handed over.**
-`cases keep branching… I'M DROWNING — EMPIRICS!!!`
-→ *parametrize:* `reserve ∈ {0,1}`
+`hmm B ⊆ used[j]-parts… I'M DROWNING — EMPIRICS!!!`
+→ *parametrize:* `CAP ∈ {m−1, m−2}`
 → *reference:* brute force, slow enough to be obviously right
-→ *method, stated:* `I'M GOING TO TRUST-AND-VERIFY: implement each reserve rule and compare it
-with the reference. If mismatches appear, study them and refine.`
+→ *method, stated:* `I'M GOING TO TRUST-AND-VERIFY: implement the greedy with rule […],
+WITHOUT explicit (b), and see if it matches brute force. If mismatches appear, study them and
+refine.`
 
-**Write the finding back.** `reserve = 1 ✓ brute n ≤ 6, incl. empty and maximum` — recorded as a
+**Write the finding back.** `CAP = m−2 ✓ brute n ≤ 6, incl. empty and maximum` — recorded as a
 numbered checkpoint, with its coverage stated, so no later step re-tests it.
 
-**Close the loop.** `After exploration, write the final implementation and retain the slow reference.`
+**Close the loop.** `After exploration, write final sol.cpp + a slow-reference cpp.`
 
 **Done-check.** Read the goal back line by line. Sound? Verified on n ≤ 6 — and *not* verified
 above that, which is the unchecked edge, and which gets said.
