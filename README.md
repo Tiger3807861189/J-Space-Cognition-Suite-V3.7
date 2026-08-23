@@ -144,11 +144,8 @@ Selected files should be retrieved on demand. Selective loading is part of the o
 | HLE (w/o tools)          |  *1.02 |  −2% |       −10% |      +5% |        **0.98×** |            +5% |
 | HLE (w/ tools)           |   0.88 | +14% |       −22% |      +3% |        **1.15×** |            +2% |
 | Terminal Bench 2.1       |   0.79 | +27% |       −28% |      −3% |        **1.29×** |            −5% |
-| NL2Repo                  |   0.76 | +32% |       −31% |      −5% |        **1.38×** |            −9% |
-| CyberGym                 |   0.78 | +28% |       −28% |      −2% |        **1.32×** |            −5% |
 | DeepSWE                  |   0.78 | +28% |       −28% |      −3% |        **1.34×** |            −7% |
 | Toolathlon-Verified      |   0.86 | +16% |       −25% |      +2% |        **1.19×** |            +0% |
-| Agents' Last Exam        |   0.78 | +28% |       −28% |      −2% |        **1.33×** |            −5% |
 | AutomationBench (Public) |   0.76 | +32% |       −31% |      −5% |        **1.41×** |           −12% |
 
 \* For HLE (w/o tools) τ=1.02 is **intentionally positive** (i.e., slower): on single-turn tasks the Skill entry is a net overhead.
