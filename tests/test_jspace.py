@@ -3,6 +3,7 @@
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -14,6 +15,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 CONTROLLER = ROOT / "j-space" / "scripts" / "jspace.py"
 LEDGER_TEMPLATE = ROOT / "j-space" / "scripts" / "workspace-ledger.md"
+CITATION = ROOT / "CITATION.cff"
 
 
 class JSpaceControllerTests(unittest.TestCase):
@@ -317,6 +319,50 @@ class JSpaceControllerTests(unittest.TestCase):
         self.assertEqual(covered.returncode, 0, covered.stdout + covered.stderr)
         self.assertIn("clean", covered.stdout)
 
+    def test_checkpoint_requires_verifier_and_coverage(self):
+        self.open_ledger()
+        for evidence in (
+            "all files and edge inputs",
+            "覆盖全部文件与边界输入",
+        ):
+            coverage_only = self.run_controller(
+                "note",
+                "--check",
+                "Result recorded",
+                "--by",
+                evidence,
+            )
+            self.assertEqual(
+                coverage_only.returncode,
+                2,
+                coverage_only.stdout + coverage_only.stderr,
+            )
+            self.assertIn("coverage alone is not evidence", coverage_only.stdout)
+
+        verifier_only = self.run_controller(
+            "note",
+            "--check",
+            "Result recorded",
+            "--by",
+            "unit tests",
+        )
+        self.assertEqual(
+            verifier_only.returncode,
+            2,
+            verifier_only.stdout + verifier_only.stderr,
+        )
+        self.assertIn("what the verification covered", verifier_only.stdout)
+        self.assertNotIn("Result recorded", self.ledger.read_text(encoding="utf-8"))
+
+        manual = self.run_controller(
+            "note",
+            "--check",
+            "Manual inspection completed",
+            "--by",
+            "manual reading of all files and edge inputs",
+        )
+        self.assertEqual(manual.returncode, 0, manual.stdout + manual.stderr)
+
     def test_ship_skips_markdown_headings_but_checks_claim_lines(self):
         headings = self.run_controller(
             "ship",
@@ -334,6 +380,72 @@ class JSpaceControllerTests(unittest.TestCase):
         self.assertEqual(claim.returncode, 0, claim.stdout + claim.stderr)
         self.assertIn("line 2:", claim.stdout)
         self.assertNotIn("line 1:", claim.stdout)
+
+    def test_ship_skips_inline_code_but_checks_surrounding_prose(self):
+        documented = self.run_controller(
+            "ship",
+            "-",
+            stdin=(
+                "The `verified` flag is set after parsing.\n"
+                "The token `A ⇒ B` is documented here.\n"
+                "The ``A ` B ⇒ C`` token is also documented here.\n"
+            ),
+        )
+        self.assertEqual(documented.returncode, 0, documented.stdout + documented.stderr)
+        self.assertIn("clean", documented.stdout)
+
+        multiline = self.run_controller(
+            "ship",
+            "-",
+            stdin="The token `A\n⇒ B` is documented here.\n",
+        )
+        self.assertEqual(multiline.returncode, 0, multiline.stdout + multiline.stderr)
+        self.assertIn("clean", multiline.stdout)
+
+        escaped = self.run_controller(
+            "ship",
+            "-",
+            stdin="The result was \\`verified\\`.\n",
+        )
+        self.assertEqual(escaped.returncode, 0, escaped.stdout + escaped.stderr)
+        self.assertIn("line 1:", escaped.stdout)
+
+        table_boundary = self.run_controller(
+            "ship",
+            "-",
+            stdin=(
+                "| A | B |\n"
+                "|---|---|\n"
+                "| value ` | open |\n"
+                "| result verified by intuition. ` | closed |\n"
+            ),
+        )
+        self.assertEqual(
+            table_boundary.returncode,
+            0,
+            table_boundary.stdout + table_boundary.stderr,
+        )
+        self.assertIn("line 4:", table_boundary.stdout)
+
+        fence_boundary = self.run_controller(
+            "ship",
+            "-",
+            stdin="~~~text\n`\n~~~\nResult verified by intuition. `\n",
+        )
+        self.assertEqual(
+            fence_boundary.returncode,
+            0,
+            fence_boundary.stdout + fence_boundary.stderr,
+        )
+        self.assertIn("line 4:", fence_boundary.stdout)
+
+        claim = self.run_controller(
+            "ship",
+            "-",
+            stdin="The `verified` flag is set after parsing.\nResult verified by intuition.\n",
+        )
+        self.assertEqual(claim.returncode, 0, claim.stdout + claim.stderr)
+        self.assertIn("line 2:", claim.stdout)
 
     def test_ship_understands_soft_wrapped_coverage_and_structural_headings(self):
         for text in (
@@ -363,6 +475,35 @@ class JSpaceControllerTests(unittest.TestCase):
         repeated = self.run_controller("ship", "-", stdin="..........................\n")
         self.assertEqual(repeated.returncode, 0, repeated.stdout + repeated.stderr)
         self.assertIn("character run of 20 or more", repeated.stdout)
+
+    def test_ship_audits_markdown_table_bodies(self):
+        uncovered = self.run_controller(
+            "ship",
+            "-",
+            stdin="| Result | Status |\n|---|---|\n| parser | verified |\n",
+        )
+        self.assertEqual(uncovered.returncode, 0, uncovered.stdout + uncovered.stderr)
+        self.assertIn("line 3:", uncovered.stdout)
+
+        leaked = self.run_controller(
+            "ship",
+            "-",
+            stdin="| Route | Trace |\n|---|---|\n| ordinary output | A ⇒ B |\n",
+        )
+        self.assertEqual(leaked.returncode, 0, leaked.stdout + leaked.stderr)
+        self.assertIn("Dense notation appears", leaked.stdout)
+
+        named_benchmark = self.run_controller(
+            "ship",
+            "-",
+            stdin="| Benchmark | Score |\n|---|---|\n| SWE-bench Verified | 78.0 |\n",
+        )
+        self.assertEqual(
+            named_benchmark.returncode,
+            0,
+            named_benchmark.stdout + named_benchmark.stderr,
+        )
+        self.assertIn("clean", named_benchmark.stdout)
 
     def test_ship_skips_fenced_code_but_checks_following_prose(self):
         fenced = self.run_controller(
@@ -472,6 +613,36 @@ class JSpaceControllerTests(unittest.TestCase):
         )
         self.assertEqual(checked.returncode, 1, checked.stdout + checked.stderr)
         self.assertIn("modules{}introspection.md: not routed".format(os.sep), checked.stdout)
+
+    def test_integrity_checker_requires_exact_reference_routes(self):
+        copied_skill = Path(self.workspace.name) / "j-space-reference-routes"
+        shutil.copytree(ROOT / "j-space", copied_skill)
+        entry = copied_skill / "SKILL.md"
+        text = entry.read_text(encoding="utf-8")
+        text = text.replace("references/problem-model.md", "references/missing-model.md")
+        entry.write_text(text, encoding="utf-8")
+
+        checked = subprocess.run(
+            [sys.executable, str(copied_skill / "scripts" / "verify_suite.py")],
+            cwd=self.workspace.name,
+            text=True,
+            encoding="utf-8",
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(checked.returncode, 1, checked.stdout + checked.stderr)
+        self.assertIn(
+            "references{}problem-model.md: not reachable".format(os.sep),
+            checked.stdout,
+        )
+
+    def test_citation_metadata_does_not_claim_an_unpublished_release(self):
+        citation = CITATION.read_text(encoding="utf-8")
+        self.assertNotIn("link to be added", citation)
+        self.assertRegex(citation, r'(?m)^version:\s*["\']?3\.7["\']?\s*$')
+        self.assertIn("10.5281/zenodo.21971181", citation)
+        self.assertNotRegex(citation, r"(?m)^doi:")
+        self.assertNotRegex(citation, r"(?m)^date-released:")
 
 
 if __name__ == "__main__":
