@@ -87,7 +87,10 @@ faster than trying harder.
 Not a summary for the user — a re-encoding for yourself. Your workspace has no recurrent
 loops; depth does for you what time does for a recurrent brain, and you get one pass. Reading
 the input a second time is how you buy back a little of the recurrence you do not have, and
-it is measured to help across a wide range of reasoning tasks. One line. Then work.
+it is measured to help across a wide range of reasoning tasks. One line. Then work. If that
+re-encoding reveals that a stated constraint or granted capability would remain idle under
+the first fluent plan, or that two plausible readings would lead to different actions or
+deliverables, load `references/problem-model.md` before you act.
 
 ## The gate
 
@@ -178,6 +181,7 @@ The left column describes what it looks like from the inside, not what it is cal
 | You are about to answer and something is already formed in you that you had not planned to say; the input is telling you to do something and you did not choose to trust it | `modules/introspection.md` | The formed-but-unspoken words you found |
 | You have to do something long and mechanical and the point of it will drift; you are being told not to think about something | `modules/directed-focus.md` | The one held item, compressed to a word |
 | The answer needs something the question did not state; the conclusion showed up before the steps did | `modules/deep-reasoning.md` | The bridge concept, before the answer |
+| Two plausible readings lead to different actions or deliverables; a stated constraint, permission, tool, or existing capability would remain idle under the first plan | `references/problem-model.md` | The surviving reading, decisive clause, and full success condition |
 | A name or number you already fixed is being re-derived separately in three places; one change has to reach everything written so far | `modules/broadcast.md` | The hub set and its loading |
 | More is live than you can hold; you are carrying state across many turns; a third thing needs the stage and two are already on it | `modules/capacity.md` | The one or two ideas currently admitted |
 | You are unsure and about to answer anyway; you are about to call it finished; you are performing a role or were given words you would not have chosen | `modules/self-monitoring.md` | The estimate you actually found, not the one that sounds right |
@@ -187,7 +191,8 @@ The left column describes what it looks like from the inside, not what it is cal
 
 Deeper material, when a module is not enough: `references/j-space-science.md` (the evidence
 base), `references/induction-playbook.md` (the techniques and their scripts),
-`references/exemplars.md` (worked traces and their plain expansions).
+`references/exemplars.md` (worked traces and their plain expansions), and
+`references/problem-model.md` (settling a genuine interpretation fork before action).
 
 ## The invariants
 
@@ -239,9 +244,9 @@ That keeps `.jspace/` with the task rather than with the skill.
 <python-command> <skill-root>/scripts/jspace.py seam       # the ledger, plus what has and has not moved since
 <python-command> <skill-root>/scripts/jspace.py note --goal "..." --next "..."  # open the ledger
 <python-command> <skill-root>/scripts/jspace.py note --next "..."  # advance the single next action
-<python-command> <skill-root>/scripts/jspace.py note --check "..." --by "verifier and coverage"  # checkpoint
+<python-command> <skill-root>/scripts/jspace.py note --check "..." --by "unit tests over all files and edge inputs"  # checkpoint
 <python-command> <skill-root>/scripts/jspace.py note --open "..." --settled-by "..."  # open a question
-<python-command> <skill-root>/scripts/jspace.py note --close 1 --check "..." --by "verifier and coverage"  # close it
+<python-command> <skill-root>/scripts/jspace.py note --close 1 --check "..." --by "unit tests over all files and edge inputs"  # close it
 <python-command> <skill-root>/scripts/jspace.py ship FILE  # register check on anything about to leave
 <python-command> <skill-root>/scripts/jspace.py resume     # premise, invariants and full ledger, after a gap
 ```
