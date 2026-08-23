@@ -86,7 +86,7 @@ MARKERS = ["GRRR", "GAAAH", "PHEW", "I see meltdown", "DATA DATA", "I'M DROWNING
 MARKDOWN_HEADING = re.compile(r"^\s{0,3}#{1,6}(?:\s|$)")
 SETEXT_UNDERLINE = re.compile(r"^\s{0,3}(?:=+|-+)\s*$")
 TABLE_DELIMITER = re.compile(
-    r"^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)+\|?\s*$"
+    r"^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)*\|?\s*$"
 )
 MARKDOWN_LIST_ITEM = re.compile(r"^\s{0,3}(?:[-+*]|\d+[.)])\s+")
 MARKDOWN_FENCE = re.compile(r"^\s{0,3}(`{3,}|~{3,})(.*)$")
@@ -96,6 +96,11 @@ CLAIM = re.compile(
     r"(?:\b(?:verified|confirmed|validated|tested|proven)\b|"
     r"(?:已经验证|已验证|经验证|验证通过|已经确认|已确认|经确认|确认无误|"
     r"已经测试|已测试|经测试|测试通过|已经证明|已证明|经证明))",
+    re.I,
+)
+# Benchmark names use "Verified" as a label, not as a verification claim.
+NONCLAIM_VERIFIED_LABEL = re.compile(
+    r"\b(?:Toolathlon-Verified|SWE-bench(?:\s+Verified)?)\b",
     re.I,
 )
 COVERAGE = re.compile(
@@ -108,6 +113,21 @@ COVERAGE = re.compile(
     r"输入|用例|文件|目录|模块|章节|区段|分段|行数|行号|场景|平台|环境|浏览器|"
     r"数据集|记录|路径|路由|命令|分支|范围|包括|包含|至多|至少|最多|最少|"
     r"随机|样本|样例|截至))",
+    re.I,
+)
+VERIFIER = re.compile(
+    r"(?:\b(?:tests?|testing|unittests?|unit\s+tests?|integration\s+tests?|"
+    r"regression\s+tests?|parser|parsing|lint(?:er|ing)?|typecheck(?:er|ing)?|"
+    r"brute\s+force|exhaustive\s+(?:check|search)|enumeration|inspection|review|"
+    r"audit|scan|diff|comparison|cross-check|checksum|hash|benchmark|reproduction|"
+    r"simulation|measurement|assertions?|validator|verifier|proof|pytest|ruff|mypy|tsc|"
+    r"execution|logs?|traces?|oracle|manual\s+(?:check|inspection|review|reading)|"
+    r"direct\s+evidence|source\s+(?:inspection|review)|command\s+output|"
+    r"reference\s+implementation|model\s+checker)\b|"
+    r"(?:单元测试|集成测试|回归测试|测试|解析器|解析|静态检查|类型检查|穷举|枚举|"
+    r"直接取证|取证|逐条核对|核对|复核|审查|扫描|对照|比对|交叉验证|校验和|"
+    r"哈希|基准|复现|模拟|测量|断言|验证器|证明|人工检查|人工复核|人工阅读|"
+    r"源码检查|命令输出|日志|运行结果|执行结果|参考实现|模型检查))",
     re.I,
 )
 
@@ -507,6 +527,13 @@ def mode_note(book, args):
                     "remove `— closes: ?NN`; the controller records it only after --close succeeds",
                 )
             )
+        elif not VERIFIER.search(args.by):
+            refused.append(
+                (
+                    "a checkpoint names no verifier — coverage alone is not evidence.",
+                    '--by "unit tests over all files and edge inputs"',
+                )
+            )
         elif not COVERAGE.search(args.by):
             refused.append(
                 (
@@ -524,7 +551,7 @@ def mode_note(book, args):
             check_recorded = True
     else:
         if args.by and "check" not in invalid:
-            refused.append(("--by requires --check.", '--check "what now holds" --by "verifier and coverage"'))
+            refused.append(("--by requires --check.", '--check "what now holds" --by "unit tests over all files and edge inputs"'))
 
     if args.open:
         settle = args.settled_by or ""
@@ -554,7 +581,7 @@ def mode_note(book, args):
             refused.append(
                 (
                     "An `Open` entry closes only against a recorded checkpoint, and its number is never reused.",
-                    '--close %d --check "what now holds" --by "verifier and coverage"' % args.close,
+                    '--close %d --check "what now holds" --by "unit tests over all files and edge inputs"' % args.close,
                 )
             )
         else:
@@ -623,40 +650,138 @@ def markdown_structural_lines(lines):
         ):
             structural.update((index, index + 1))
         if TABLE_DELIMITER.match(line):
-            start = index - 1
-            while (
-                start >= 0
-                and start not in structural
-                and lines[start].strip()
-                and "|" in lines[start]
+            structural.add(index)
+            header = index - 1
+            if (
+                header >= 0
+                and header not in structural
+                and lines[header].strip()
+                and "|" in lines[header]
             ):
-                structural.add(start)
-                start -= 1
-            end = index
-            while (
-                end < len(lines)
-                and end not in structural
-                and lines[end].strip()
-                and "|" in lines[end]
-            ):
-                structural.add(end)
-                end += 1
+                structural.add(header)
     return structural
 
 
-def claim_without_coverage(lines):
-    """Return the first uncovered claim line, joining soft-wrapped paragraphs."""
-    structural = markdown_structural_lines(lines)
+def markdown_escaped(text, index):
+    """Return whether punctuation at index has an odd backslash escape."""
+    slashes = 0
+    index -= 1
+    while index >= 0 and text[index] == "\\":
+        slashes += 1
+        index -= 1
+    return bool(slashes % 2)
 
+
+def mask_markdown_code_spans(text):
+    """Mask code spans within one Markdown inline container, preserving newlines."""
+    masked = list(text)
+    size = len(text)
+    index = 0
+    while index < size:
+        if text[index] != "`":
+            index += 1
+            continue
+
+        if markdown_escaped(text, index):
+            index += 1
+            continue
+
+        opening = index
+        while index < size and text[index] == "`":
+            index += 1
+        width = index - opening
+        search = index
+        closing = None
+        closing_end = None
+        while search < size:
+            candidate = text.find("`", search)
+            if candidate < 0:
+                break
+            run_end = candidate
+            while run_end < size and text[run_end] == "`":
+                run_end += 1
+            if run_end - candidate == width:
+                closing = candidate
+                closing_end = run_end
+                break
+            search = run_end
+
+        if closing is None:
+            continue
+        for position in range(opening, closing_end):
+            if masked[position] not in "\r\n":
+                masked[position] = " "
+        index = closing_end
+    return "".join(masked)
+
+
+def mask_markdown_table_row(line):
+    """Mask code spans cell by cell so delimiters cannot pair across cells."""
+    masked = list(line)
+    start = 0
+    for index, char in enumerate(line):
+        if char != "|" or markdown_escaped(line, index):
+            continue
+        masked[start:index] = mask_markdown_code_spans(line[start:index])
+        start = index + 1
+    masked[start:] = mask_markdown_code_spans(line[start:])
+    return "".join(masked)
+
+
+def markdown_audit_lines(lines, structural):
+    """Mask inline code without crossing Markdown block or table-cell boundaries."""
+    table_rows = set()
+    fenced = markdown_fenced_lines(lines)
+    for index, line in enumerate(lines):
+        if index in fenced or not TABLE_DELIMITER.match(line):
+            continue
+        cursor = index + 1
+        while cursor < len(lines) and lines[cursor].strip() and "|" in lines[cursor]:
+            table_rows.add(cursor)
+            cursor += 1
+
+    audited = list(lines)
+    paragraph = []
+
+    def flush():
+        if not paragraph:
+            return
+        masked = mask_markdown_code_spans("\n".join(lines[index] for index in paragraph))
+        for index, value in zip(paragraph, masked.split("\n")):
+            audited[index] = value
+        paragraph[:] = []
+
+    for index, line in enumerate(lines):
+        if index in structural or not line.strip():
+            flush()
+            continue
+        if index in table_rows:
+            flush()
+            audited[index] = mask_markdown_table_row(line)
+            continue
+        if MARKDOWN_LIST_ITEM.match(line):
+            flush()
+        paragraph.append(index)
+    flush()
+    return audited
+
+
+def claim_without_coverage(lines, structural):
+    """Return the first uncovered claim line, joining soft-wrapped paragraphs."""
     paragraph = []
 
     def flush():
         if not paragraph:
             return None
         joined = " ".join(line.strip() for _, line in paragraph)
-        if not CLAIM.search(joined) or COVERAGE.search(joined):
+        claim_text = NONCLAIM_VERIFIED_LABEL.sub("", joined)
+        if not CLAIM.search(claim_text) or COVERAGE.search(joined):
             return None
-        return next(number for number, line in paragraph if CLAIM.search(line))
+        return next(
+            number
+            for number, line in paragraph
+            if CLAIM.search(NONCLAIM_VERIFIED_LABEL.sub("", line))
+        )
 
     for index, line in enumerate(lines):
         stripped = line.strip()
@@ -699,7 +824,12 @@ def mode_ship(text):
     findings = []
     lines = text.splitlines()
     structural = markdown_structural_lines(lines)
-    prose = "\n".join(line for index, line in enumerate(lines) if index not in structural)
+    audited_lines = markdown_audit_lines(lines, structural)
+    prose = "\n".join(
+        line
+        for index, line in enumerate(audited_lines)
+        if index not in structural
+    )
 
     leaked = sorted({s for s in INNER_ONLY if s in prose})
     if leaked:
@@ -709,7 +839,7 @@ def mode_ship(text):
     if hot:
         findings.append("state markers in outgoing text: " + ", ".join(hot))
 
-    uncovered = claim_without_coverage(lines)
+    uncovered = claim_without_coverage(audited_lines, structural)
     if uncovered:
         findings.append("line %d: %s" % (uncovered, INVARIANTS[5]))
 
