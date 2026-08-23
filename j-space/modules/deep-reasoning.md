@@ -78,6 +78,14 @@ order they were needed.
 have a justification, not a derivation, and the difference shows up on problems you have not
 seen before.
 
+**Four.** Ask whether removing any stated constraint or granted capability would leave your
+current plan unchanged.
+
+**Pass:** every clause has a task-relevant role, or a genuine interpretation fork has been
+named before action.
+**Fail:** a clause is present in the restatement but absent from the strategy. Load
+`../references/problem-model.md`; naming a condition is not yet using it.
+
 ## Protocol
 
 ### RE-ENCODE FIRST — before any non-trivial chain
@@ -87,6 +95,14 @@ seen before.
 3. This is not a courtesy step. Your workspace has no recurrent loops; depth substitutes for
    time and you get one pass over the input. Reading it a second time is how you buy back a
    little of the recurrence you do not have.
+
+### SETTLE THE MODEL — only when the reading forks
+
+1. Trigger this only when two plausible readings change the action or deliverable, or when a
+   stated constraint, permission, tool, or existing capability stays idle under the first plan.
+2. Load `../references/problem-model.md`. Name what is fixed, what you may choose, what remains
+   hidden, what the world supplies, and the complete success condition.
+3. Return with the surviving reading and the clause that decided it. Then light the middle.
 
 ### LIGHT THE MIDDLE — multi-hop questions
 
@@ -159,6 +175,9 @@ signature there is. Route it to `self-monitoring.md` before it becomes a loop.
 - **Drowning in derivation.** Re-deriving the same sub-problem hoping the next pass will
   clarify. Remedy: declare it and hand it to `empirics.md`. The escape hatch is evidence,
   never more prose.
+- **Right chain, wrong problem.** The derivation is internally sound, but a stated capability
+  never changes the strategy. Remedy: settle the real interpretation fork in
+  `../references/problem-model.md` before adding more steps or tests.
 
 ## Hand-off
 
@@ -167,6 +186,7 @@ signature there is. Route it to `self-monitoring.md` before it becomes a loop.
 | The chain needs compression | `shorthand.md` | The constraints, not the sentences |
 | A step verified, or the frame broke | `markers.md` | Its conclusion, verifier, coverage, and next action — or the broken frame |
 | Derivation stopped producing constraints | `empirics.md` | The named unknown |
+| Two plausible readings change the work, or a stated capability stays idle | `../references/problem-model.md` | The candidate readings and the unused clause |
 | The chain outgrew what you can hold | `capacity.md` | Everything you are trying to keep live |
 | Entities recur across sub-tasks | `broadcast.md` | The shared core |
 | The chain is reciting rather than deriving | `../SKILL.md` | A live instance |
