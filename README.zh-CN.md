@@ -47,6 +47,19 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 安装后，请使用可用的 Python 3 解释器运行 scripts/verify_suite.py。完成后告诉我安装路径和校验结果，并说明当前宿主应如何调用这个 Skill。请简要解释 fast、full、loop 三种 pass，以及可选控制器负责记录长任务状态而不负责选择解法。如果当前宿主没有原生 Skill 加载能力，请说明如何通过 system/developer 指令和选择性文件检索完成接入，不要把这种接入报告成原生安装。
 ```
 
+### OpenAI Codex
+
+Codex 的 CLI、IDE 扩展和应用均支持 Skills。请将完整的 `j-space/` 目录复制到
+[官方文档列出的 Skill 位置](https://developers.openai.com/codex/skills)之一：
+
+- `$HOME/.agents/skills/j-space/`：对当前用户的所有项目生效
+- 仓库中的 `.agents/skills/j-space/`：仅对该项目生效
+
+确认最终路径以 `j-space/SKILL.md` 结尾，使用 Python 3 运行
+`scripts/verify_suite.py`；如果 Skill 未显示，请重启 Codex。可通过 `$j-space`
+调用，也可以直接要求 Codex 在任务中使用 J-Space。J-Space 与模型无关，因此可配合
+Codex 中可用的 GPT 模型使用；实际效果仍会随模型、Harness 和任务而变化。
+
 ### 开始使用
 
 通过宿主提供的 Skill 选择器、`/j-space`、`$j-space`，或者直接要求 AI 使用：

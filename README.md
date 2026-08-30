@@ -48,6 +48,20 @@ First inspect the host configuration or documentation to locate the correct Skil
 When finished, report the installed path and verification result, then tell me how this host invokes the Skill. Briefly explain fast, full, and loop, and explain that the optional controller records long-task state rather than choosing solutions. If this host has no native Skill loader, explain the selective system/developer-instruction integration instead of reporting an installation.
 ```
 
+### OpenAI Codex
+
+Codex supports Skills across its CLI, IDE extension, and app. Copy the complete `j-space/`
+directory to one of the [documented Skill locations](https://developers.openai.com/codex/skills):
+
+- `$HOME/.agents/skills/j-space/` for your user account
+- `.agents/skills/j-space/` in a repository for project-only use
+
+Confirm that the resulting path ends in `j-space/SKILL.md`, run
+`scripts/verify_suite.py` with Python 3, and restart Codex if the Skill does not appear.
+Invoke it with `$j-space` or ask Codex to use J-Space for the task. J-Space is
+model-agnostic, so it can be selected with GPT models available in Codex; results still vary
+with the model, harness, and task.
+
 ### Use it
 
 Invoke the Skill through the mechanism provided by your host—such as its Skill picker,
