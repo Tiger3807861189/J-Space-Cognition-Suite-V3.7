@@ -83,8 +83,7 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 
 ## 可选控制器
 
-[`j-space/scripts/jspace.py`](j-space/scripts/jspace.py) 将 `loop` 状态外化到当前任务工作区的 `.jspace/` 中。调用时使用脚本在 Skill 中的实际路径，并保持任务工作区为
-当前目录。
+[`j-space/scripts/jspace.py`](j-space/scripts/jspace.py) 将 `loop` 状态外化到当前任务工作区的 `.jspace/` 中。调用时使用脚本在 Skill 中的实际路径，并保持任务工作区为当前目录。
 
 | 命令 | 用途 |
 |---|---|
