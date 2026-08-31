@@ -130,6 +130,7 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 | AutomationBench (Public) |                         25.7 |                                        **27.5** |    48.2 |     27.2 |                  29.1 |
 
 \* HLE 数据未披露，沿用 DeepSeek V4-Flash-0731。
+
 ### 2. 速度与 token 效率
 
 | Benchmark                | 墙钟 τ | 提速 | 输出 token | 总 token | **单位时间得分** | 每成功任务成本 |
