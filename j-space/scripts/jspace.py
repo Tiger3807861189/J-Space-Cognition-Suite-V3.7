@@ -30,6 +30,7 @@ Standard library only. No network. Writes exactly one directory: .jspace/
 
 import argparse
 import codecs
+import errno
 import json
 import os
 import re
@@ -100,7 +101,7 @@ CLAIM = re.compile(
 )
 # Benchmark names use "Verified" as a label, not as a verification claim.
 NONCLAIM_VERIFIED_LABEL = re.compile(
-    r"\b(?:Toolathlon-Verified|SWE-bench(?:\s+Verified)?)\b",
+    r"\b(?:Toolathlon-Verified|SWE-bench(?:[\s-]+Verified)?)\b",
     re.I,
 )
 COVERAGE = re.compile(
@@ -141,7 +142,7 @@ def read_ledger():
         return book
     current = None
     try:
-        with open(LEDGER, encoding="utf-8") as fh:
+        with open(LEDGER, encoding="utf-8-sig") as fh:
             lines = fh.read().splitlines()
     except (OSError, UnicodeError) as exc:
         raise LedgerReadError("%s (%s)" % (LEDGER, exc)) from exc
@@ -287,8 +288,9 @@ def read_history():
     return hist
 
 
-def append_history(book):
-    hist = read_history()
+def append_history(book, hist=None):
+    if hist is None:
+        hist = read_history()
     hist.append(
         {
             "t": int(time.time()),
@@ -402,7 +404,7 @@ def mode_seam(book):
     else:
         print("── j-space ─ seam")
         print_ledger(book)
-    hist = append_history(book)
+    hist = append_history(book, hist)
     found = observations(hist)
     if found:
         print()
@@ -574,7 +576,12 @@ def mode_note(book, args):
     if args.close is not None:
         rows = book["Open"]
         target = "?%02d" % args.close
-        idx = next((i for i, row in enumerate(rows) if row.startswith(target + " ")), None)
+        idx = None
+        for i, row in enumerate(rows):
+            match = re.match(r"^\?(\d+)\b", row)
+            if match and int(match.group(1)) == args.close:
+                idx = i
+                break
         if idx is None:
             refused.append(
                 ("no open question numbered %d." % args.close, "run `resume` to see the full list")
@@ -596,6 +603,12 @@ def mode_note(book, args):
         changed = True
 
     if changed:
+        for name in ("Goal", "Next"):
+            if len(book[name]) > 1:
+                print(
+                    "WARNING: a hand-restated %s had more than one line; only the first was kept." % name,
+                    file=sys.stderr,
+                )
         problem = write_ledger(book)
         if problem:
             print("CANNOT: cannot write the ledger — " + problem)
@@ -855,7 +868,7 @@ def mode_ship(text):
             findings.append("repetition loop: a line repeats three times or more")
             break
 
-    for index, line in enumerate(lines):
+    for index, line in enumerate(audited_lines):
         if index not in structural and re.search(r"([.…\-'])\1{20,}", line):
             findings.append("repetition loop: a character run of 20 or more")
             break
@@ -969,4 +982,13 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except OSError as exc:
+        # The reader closed the pipe (`... | head`); Windows reports that as
+        # EINVAL rather than EPIPE. Either way it is the reader's call, never
+        # a reason to exit non-zero.
+        if exc.errno not in (errno.EPIPE, errno.EINVAL, errno.ESHUTDOWN):
+            raise
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+        sys.exit(0)

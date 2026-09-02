@@ -3,7 +3,6 @@
 import json
 import os
 from pathlib import Path
-import re
 import shutil
 import subprocess
 import sys
@@ -459,6 +458,90 @@ class JSpaceControllerTests(unittest.TestCase):
         self.assertNotIn("brute force", rows["ledger stable"])
         self.assertNotIn("manual review", rows["ledger stable"])
 
+    def test_hand_restated_unpadded_open_number_still_closes(self):
+        self.ledger.parent.mkdir()
+        self.ledger.write_text(
+            "# J-Space Workspace Ledger\n\n## Goal\nShip verified output\n\n## Core\n\n"
+            "## Verified\n\n## Open\n"
+            "- ?9 Loose numbering from a hand restatement — settled by: test over all inputs\n"
+            "\n## Next\nInspect inputs\n",
+            encoding="utf-8",
+        )
+        closed = self.run_controller(
+            "note",
+            "--close",
+            "9",
+            "--check",
+            "hand-restated ledger integrates",
+            "--by",
+            "diff against the previous seam, every section",
+        )
+        self.assertEqual(closed.returncode, 0, closed.stdout + closed.stderr)
+        ledger = self.ledger.read_text(encoding="utf-8")
+        self.assertNotIn("?9 Loose", ledger)
+        self.assertIn("closes: ?09", ledger)
+
+        reopened = self.run_controller(
+            "note", "--open", "Next question", "--settled-by", "test over all inputs"
+        )
+        self.assertEqual(reopened.returncode, 0, reopened.stdout + reopened.stderr)
+        self.assertIn("?10 Next question", self.ledger.read_text(encoding="utf-8"))
+
+    def test_extra_goal_lines_in_a_hand_restated_ledger_warn(self):
+        self.ledger.parent.mkdir()
+        self.ledger.write_text(
+            "# J-Space Workspace Ledger\n\n## Goal\nFirst goal line\nSecond goal line\n\n"
+            "## Core\n\n## Verified\n\n## Open\n\n## Next\nInspect inputs\n",
+            encoding="utf-8",
+        )
+        edited = self.run_controller("note", "--next", "Advance")
+        self.assertEqual(edited.returncode, 0, edited.stdout + edited.stderr)
+        self.assertIn("only the first was kept", edited.stderr)
+        ledger = self.ledger.read_text(encoding="utf-8")
+        self.assertIn("First goal line", ledger)
+        self.assertNotIn("Second goal line", ledger)
+
+    def test_utf8_bom_ledger_is_still_readable(self):
+        self.ledger.parent.mkdir()
+        self.ledger.write_text(
+            "## Goal\nShip verified output\n\n## Core\n\n## Verified\n\n"
+            "## Open\n\n## Next\nInspect inputs\n",
+            encoding="utf-8-sig",
+        )
+        resumed = self.run_controller("resume")
+        self.assertEqual(resumed.returncode, 0, resumed.stdout + resumed.stderr)
+        self.assertIn("Goal: Ship verified output", resumed.stdout)
+
+    def test_corrupt_history_warns_once_per_seam(self):
+        self.open_ledger()
+        self.history.write_text("[not json", encoding="utf-8")
+        seam = self.run_controller("seam")
+        self.assertEqual(seam.returncode, 0, seam.stdout + seam.stderr)
+        self.assertEqual(seam.stderr.count("history was unreadable"), 1)
+
+    def test_broken_output_pipe_exits_cleanly(self):
+        self.open_ledger()
+        rows = "\n".join(
+            "- ✓%04d filler checkpoint — verified by: unit tests over all files and edge inputs" % n
+            for n in range(4000)
+        )
+        self.ledger.write_text(
+            "# J-Space Workspace Ledger\n\n## Goal\nShip verified output\n\n## Core\n\n"
+            "## Verified\n%s\n\n## Open\n\n## Next\nInspect inputs\n" % rows,
+            encoding="utf-8",
+        )
+        proc = subprocess.Popen(
+            [sys.executable, str(CONTROLLER), "resume"],
+            cwd=self.workspace.name,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        proc.stdout.close()
+        stderr = proc.stderr.read()
+        proc.wait()
+        self.assertNotIn(b"Traceback", stderr)
+        self.assertEqual(proc.returncode, 0)
+
     def test_ship_skips_markdown_headings_but_checks_claim_lines(self):
         headings = self.run_controller(
             "ship",
@@ -617,6 +700,30 @@ class JSpaceControllerTests(unittest.TestCase):
         )
         self.assertEqual(followed.returncode, 0, followed.stdout + followed.stderr)
         self.assertIn("line 4:", followed.stdout)
+
+    def test_ship_ignores_character_runs_inside_inline_code(self):
+        clean = self.run_controller(
+            "ship",
+            "-",
+            stdin="The token `........................` is documented here.\n",
+        )
+        self.assertEqual(clean.returncode, 0, clean.stdout + clean.stderr)
+        self.assertIn("clean", clean.stdout)
+
+        reported = self.run_controller(
+            "ship", "-", stdin="A run like ........................ leaks.\n"
+        )
+        self.assertEqual(reported.returncode, 0, reported.stdout + reported.stderr)
+        self.assertIn("character run of 20 or more", reported.stdout)
+
+    def test_hyphenated_benchmark_label_is_not_an_uncovered_claim(self):
+        checked = self.run_controller(
+            "ship",
+            "-",
+            stdin="| Benchmark | Score |\n|---|---|\n| SWE-bench-Verified | 78.0 |\n",
+        )
+        self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
+        self.assertIn("clean", checked.stdout)
 
     def test_stdin_and_file_use_the_same_decoder(self):
         payload = "Résultat A ⇒ B ∴ terminé.\n".encode("utf-8")
