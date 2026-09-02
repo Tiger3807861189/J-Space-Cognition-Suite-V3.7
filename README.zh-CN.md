@@ -119,30 +119,27 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 
 ### 1. 主表
 
-| Benchmark                | DeepSeek V4-Flash-Vision-Exp | DeepSeek V4-Flash-Vision-Exp **+ J-Space V3.7** | GLM-5.3 | Opus-4.8 | Fable 5 (w/ fallback) |
-| ------------------------ | ---------------------------: | ----------------------------------------------: | ------: | -------: | --------------------: |
-| HLE (w/o tools)          |                        *37.8 |                                        **37.8** |       — |     49.8 |                  53.3 |
-| HLE (w/ tools)           |                        *51.5 |                                        **51.9** |    62.5 |     57.9 |                  63.0 |
-| Terminal Bench 2.1       |                         83.9 |                                        **85.4** |    88.2 |     85.0 |                  88.0 |
-| NL2Repo                  |                         57.7 |                                        **60.6** |    58.0 |     69.7 |                     — |
-| DeepSWE                  |                         59.3 |                                        **61.7** |    66.9 |     58.0 |                  70.0 |
-| Agents' Last Exam        |                         27.3 |                                        **28.3** |    28.5 |     25.7 |                  23.8 |
-| AutomationBench (Public) |                         25.7 |                                        **27.5** |    48.2 |     27.2 |                  29.1 |
-
-\* HLE 数据未披露，沿用 DeepSeek V4-Flash-0731。
+| Benchmark                | GLM-5.3-Flash | GLM-5.3-Flash **+ J-Space V3.7** | GLM-5.3 | Opus-5 | Fable 5.1 |
+| ------------------------ | ------------: | -------------------------------: | ------: | -----: | --------: |
+| HLE (w/ tools)           |               |                                  |    62.5 |   64.7 |      65.0 |
+| Terminal Bench 2.1       |               |                                  |    88.2 |      — |         — |
+| NL2Repo                  |               |                                  |    58.0 |      — |         — |
+| DeepSWE v1.1             |               |                                  |    66.9 |   68.8 |      67.4 |
+| Agents' Last Exam        |               |                                  |    28.5 |   31.6 |         — |
+| AutomationBench (Public) |               |                                  |    48.2 |   50.3 |         — |
+| GDPVal-AA v2             |               |                                  |    1769 |   1861 |      1853 |
 
 ### 2. 速度与 token 效率
 
-| Benchmark                | 墙钟 τ | 提速 | 输出 token | 总 token | **单位时间得分** | 每成功任务成本 |
-| ------------------------ | -----: | ---: | ---------: | -------: | ---------------: | -------------: |
-| HLE (w/o tools)          |  *1.02 |  −2% |       −10% |      +5% |        **0.98×** |            +5% |
-| HLE (w/ tools)           |   0.88 | +14% |       −22% |      +3% |        **1.15×** |            +2% |
-| Terminal Bench 2.1       |   0.79 | +27% |       −28% |      −3% |        **1.29×** |            −5% |
-| AutomationBench (Public) |   0.76 | +32% |       −31% |      −5% |        **1.41×** |           −12% |
-
-\* HLE (w/o tools) 的 τ=1.02 是**有意为正**（即变慢）：单轮任务上技能条目是净开销。
-
-**详见：[DeepSeek V4 × J-Space 能力释放报告](https://github.com/Tiger3807861189/DeepSeek-V4-J-Space-Capability-Realization-Report)。**
+| Benchmark                | 速度 | token 效率 |
+| ------------------------ | ---: | ---------: |
+| HLE (w/ tools)           |      |            |
+| Terminal Bench 2.1       |      |            |
+| NL2Repo                  |      |            |
+| DeepSWE v1.1             |      |            |
+| Agents' Last Exam        |      |            |
+| AutomationBench (Public) |      |            |
+| GDPVal-AA v2             |      |            |
 
 ## 跨模型兼容性
 
@@ -203,6 +200,8 @@ J-Space 已连续经历：
 V3.7 套件包含一个入口、九个聚焦模块、四份支撑资料、一个可选运行控制器、一个编写期验证器、一套标准库回归测试、三平台 CI、Apache-2.0 许可和机器可读引用元数据。
 
 V3.7 的问题模型路由吸收了由 [@lanting200](https://github.com/lanting200) 发起的 PR ，并包含 [@afeer123](https://github.com/afeer123) 的提交贡献。
+
+V3.7.3 的拒绝消息修复与账本重述说明回应了由 [@raelldottin](https://github.com/raelldottin) 与 [@menoxz](https://github.com/menoxz) 提出的问题。
 
 ## 开源协议
 

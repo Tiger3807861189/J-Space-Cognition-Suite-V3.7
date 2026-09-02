@@ -122,30 +122,27 @@ Selected files should be retrieved on demand. Selective loading is part of the o
 
 ### 1. Main table
 
-| Benchmark                | DeepSeek V4-Flash-Vision-Exp | DeepSeek V4-Flash-Vision-Exp **+ J-Space V3.7** | GLM-5.3 | Opus-4.8 | Fable 5 (w/ fallback) |
-| ------------------------ | ---------------------------: | ----------------------------------------------: | ------: | -------: | --------------------: |
-| HLE (w/o tools)          |                        *37.8 |                                        **37.8** |       — |     49.8 |                  53.3 |
-| HLE (w/ tools)           |                        *51.5 |                                        **51.9** |    62.5 |     57.9 |                  63.0 |
-| Terminal Bench 2.1       |                         83.9 |                                        **85.4** |    88.2 |     85.0 |                  88.0 |
-| NL2Repo                  |                         57.7 |                                        **60.6** |    58.0 |     69.7 |                     — |
-| DeepSWE                  |                         59.3 |                                        **61.7** |    66.9 |     58.0 |                  70.0 |
-| Agents' Last Exam        |                         27.3 |                                        **28.3** |    28.5 |     25.7 |                  23.8 |
-| AutomationBench (Public) |                         25.7 |                                        **27.5** |    48.2 |     27.2 |                  29.1 |
-
-\* HLE scores were not disclosed and follow DeepSeek V4-Flash-0731. 
+| Benchmark                | GLM-5.3-Flash | GLM-5.3-Flash **+ J-Space V3.7** | GLM-5.3 | Opus-5 | Fable 5.1 |
+| ------------------------ | ------------: | -------------------------------: | ------: | -----: | --------: |
+| HLE (w/ tools)           |               |                                  |    62.5 |   64.7 |      65.0 |
+| Terminal Bench 2.1       |               |                                  |    88.2 |      — |         — |
+| NL2Repo                  |               |                                  |    58.0 |      — |         — |
+| DeepSWE v1.1             |               |                                  |    66.9 |   68.8 |      67.4 |
+| Agents' Last Exam        |               |                                  |    28.5 |   31.6 |         — |
+| AutomationBench (Public) |               |                                  |    48.2 |   50.3 |         — |
+| GDPVal-AA v2             |               |                                  |    1769 |   1861 |      1853 |
 
 ### 2. Speed and token efficiency
 
-| Benchmark                | Wall-clock τ | Speedup | Output tokens | Total tokens | **Score per unit time** | Cost per successful task |
-| ------------------------ | -----: | ---: | ---------: | -------: | ---------------: | -------------: |
-| HLE (w/o tools)          |  *1.02 |  −2% |       −10% |      +5% |        **0.98×** |            +5% |
-| HLE (w/ tools)           |   0.88 | +14% |       −22% |      +3% |        **1.15×** |            +2% |
-| Terminal Bench 2.1       |   0.79 | +27% |       −28% |      −3% |        **1.29×** |            −5% |
-| AutomationBench (Public) |   0.76 | +32% |       −31% |      −5% |        **1.41×** |           −12% |
-
-\* For HLE (w/o tools) τ=1.02 is **intentionally positive** (i.e., slower): on single-turn tasks the Skill entry is a net overhead.
-
-**See: [DeepSeek V4 × J-Space Capability Realization Report](https://github.com/Tiger3807861189/DeepSeek-V4-J-Space-Capability-Realization-Report).**
+| Benchmark                | Speed | Token efficiency |
+| ------------------------ | ----: | ---------------: |
+| HLE (w/ tools)           |       |                  |
+| Terminal Bench 2.1       |       |                  |
+| NL2Repo                  |       |                  |
+| DeepSWE v1.1             |       |                  |
+| Agents' Last Exam        |       |                  |
+| AutomationBench (Public) |       |                  |
+| GDPVal-AA v2             |       |                  |
 
 ## Cross-model compatibility
 
@@ -206,6 +203,8 @@ J-Space has progressed through:
 The V3.7 package contains one entry, nine focused modules, four supporting references, an optional runtime controller, an authoring-time verifier, standard-library regression tests, three-platform CI, Apache-2.0 licensing, and machine-readable citation metadata.
 
 V3.7's problem-model routing incorporates the pull request opened by [@lanting200](https://github.com/lanting200), including commit contributions from [@afeer123](https://github.com/afeer123).
+
+V3.7.3's decline-message fix and ledger-restatement note respond to the issues opened by [@raelldottin](https://github.com/raelldottin) and [@menoxz](https://github.com/menoxz).
 
 ## License
 
