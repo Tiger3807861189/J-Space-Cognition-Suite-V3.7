@@ -200,6 +200,10 @@ V3.7 套件包含一个入口、九个聚焦模块、四份支撑资料、一个
 
 V3.7 的问题模型路由吸收了由 [@lanting200](https://github.com/lanting200) 发起的 PR，拒绝消息修复与账本重述说明回应了由 [@raelldottin](https://github.com/raelldottin) 与 [@menoxz](https://github.com/menoxz) 提出的问题，并包含 [@afeer123](https://github.com/afeer123) 的提交贡献。
 
+## 贡献者
+
+本套件受益于社区贡献：[@forever-ivy](https://github.com/forever-ivy)（CI 与引用元数据）、[@lanting200](https://github.com/lanting200) 与 [@afeer123](https://github.com/afeer123)（问题模型路由）、[@ShaneLau2](https://github.com/ShaneLau2) 与 [@menoxz](https://github.com/menoxz)（多语言覆盖、ship 检查与账本重述规则）、[@raelldottin](https://github.com/raelldottin)（拒绝消息回显）。
+
 ## 开源协议
 
 J-Space Cognition Suite 采用 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) 开源，允许在遵守声明保留与专利条款的前提下使用、修改、再分发及商业集成。完整条款见 [`LICENSE`](LICENSE)。引用或概述的外部材料仍遵循其来源条款，具体归属与边界见 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)。若只再分发运行时 `j-space/` 目录，应同时附带仓库根目录的这两个文件。

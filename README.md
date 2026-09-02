@@ -203,6 +203,10 @@ The V3.7 package contains one entry, nine focused modules, four supporting refer
 
 V3.7's problem-model routing incorporates the pull request opened by [@lanting200](https://github.com/lanting200), the decline-message fix and ledger-restatement note respond to the issues opened by [@raelldottin](https://github.com/raelldottin) and [@menoxz](https://github.com/menoxz), and the release includes commit contributions from [@afeer123](https://github.com/afeer123).
 
+## Contributors
+
+Improved by community contributions: [@forever-ivy](https://github.com/forever-ivy) (CI and citation metadata), [@lanting200](https://github.com/lanting200) with [@afeer123](https://github.com/afeer123) (problem-model routing), [@ShaneLau2](https://github.com/ShaneLau2) and [@menoxz](https://github.com/menoxz) (multilingual coverage, ship checks, and the restatement rule), and [@raelldottin](https://github.com/raelldottin) (the decline-message echo).
+
 ## License
 
 J-Space Cognition Suite is released under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). It permits use, modification, redistribution, and commercial integration under its notice and patent terms. See [`LICENSE`](LICENSE) for the complete terms. Quoted or summarized external source material remains subject to its source terms and is identified in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). When redistributing only the runtime `j-space/` directory, carry both root files with it.
