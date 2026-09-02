@@ -32,7 +32,9 @@ Add at most two live `Core` entries as `name — defining fact`; let the control
    equally, but only while that token is still in front of you.
 2. **Preserve the record.** `Verified` is numbered and append-only. `Goal` and `Next` update;
    an existing live `Core` slot changes only by an explicit swap; an `Open` entry closes against
-   a recorded checkpoint, which retains `closes: ?NN`; its number is never reused.
+   a recorded checkpoint, which retains `closes: ?NN`; its number is never reused. When the
+   ledger is restated by hand, carry each `closes: ?NN` suffix with its row — a number's
+   retirement is recorded only there.
 3. **`Next` is never empty.** A ledger with no next action is a ledger you have stopped using.
 4. **Two live core entries.** More than two is not a hub, it is a list. The rest stay written
    down and get reloaded per section.

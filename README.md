@@ -54,7 +54,7 @@ Invoke the Skill through the mechanism provided by your host—such as its Skill
 `/j-space`, `$j-space`, or a direct request:
 
 ```text
-Use j-space for this task. Audit this repository, preserve its architecture,verify every finding, and keep the work consistent across all affected files.
+Use j-space for this task. Audit this repository, preserve its architecture, verify every finding, and keep the work consistent across all affected files.
 ```
 
 The entry gate selects the lightest suitable pass automatically.
