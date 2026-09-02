@@ -121,13 +121,15 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 
 | Benchmark                | GLM-5.3-Flash | GLM-5.3-Flash **+ J-Space V3.7** | GLM-5.3 | Opus-5 | Fable 5.1 |
 | ------------------------ | ------------: | -------------------------------: | ------: | -----: | --------: |
-| HLE (w/ tools)           |               |                                  |    62.5 |   64.7 |      65.0 |
-| Terminal Bench 2.1       |               |                                  |    88.2 |      — |         — |
-| NL2Repo                  |               |                                  |    58.0 |      — |         — |
-| DeepSWE v1.1             |               |                                  |    66.9 |   68.8 |      67.4 |
-| Agents' Last Exam        |               |                                  |    28.5 |   31.6 |         — |
-| AutomationBench (Public) |               |                                  |    48.2 |   50.3 |         — |
-| GDPVal-AA v2             |               |                                  |    1769 |   1861 |      1853 |
+| HLE (w/ tools)           |          55.3 |                                  |    62.5 |   64.7 |      65.0 |
+| Terminal Bench 2.1       |          84.3 |                                  |    88.2 |  *89.1 |     *91.4 |
+| NL2Repo                  |             — |                                  |    58.0 |      — |         — |
+| DeepSWE v1.1             |          63.4 |                                  |    66.9 |   68.8 |      67.4 |
+| Agents' Last Exam        |          26.3 |                                  |    28.5 |   31.6 |         — |
+| AutomationBench (Public) |          48.8 |                                  |    48.2 |   50.3 |         — |
+| GDPVal-AA v2             |          1773 |                                  |    1769 |   1861 |      1853 |
+
+\* Terminal Bench 2.1 的 Opus-5 与 Fable 5.1 为第三方独立测评（Artificial Analysis，Terminus 2 harness，pass@1 三次重复平均），无官方数据。
 
 ### 2. 速度与 token 效率
 
@@ -199,9 +201,7 @@ J-Space 已连续经历：
 
 V3.7 套件包含一个入口、九个聚焦模块、四份支撑资料、一个可选运行控制器、一个编写期验证器、一套标准库回归测试、三平台 CI、Apache-2.0 许可和机器可读引用元数据。
 
-V3.7 的问题模型路由吸收了由 [@lanting200](https://github.com/lanting200) 发起的 PR ，并包含 [@afeer123](https://github.com/afeer123) 的提交贡献。
-
-V3.7.3 的拒绝消息修复与账本重述说明回应了由 [@raelldottin](https://github.com/raelldottin) 与 [@menoxz](https://github.com/menoxz) 提出的问题。
+V3.7 的问题模型路由吸收了由 [@lanting200](https://github.com/lanting200) 发起的 PR，拒绝消息修复与账本重述说明回应了由 [@raelldottin](https://github.com/raelldottin) 与 [@menoxz](https://github.com/menoxz) 提出的问题，并包含 [@afeer123](https://github.com/afeer123) 的提交贡献。
 
 ## 开源协议
 

@@ -124,13 +124,15 @@ Selected files should be retrieved on demand. Selective loading is part of the o
 
 | Benchmark                | GLM-5.3-Flash | GLM-5.3-Flash **+ J-Space V3.7** | GLM-5.3 | Opus-5 | Fable 5.1 |
 | ------------------------ | ------------: | -------------------------------: | ------: | -----: | --------: |
-| HLE (w/ tools)           |               |                                  |    62.5 |   64.7 |      65.0 |
-| Terminal Bench 2.1       |               |                                  |    88.2 |      — |         — |
-| NL2Repo                  |               |                                  |    58.0 |      — |         — |
-| DeepSWE v1.1             |               |                                  |    66.9 |   68.8 |      67.4 |
-| Agents' Last Exam        |               |                                  |    28.5 |   31.6 |         — |
-| AutomationBench (Public) |               |                                  |    48.2 |   50.3 |         — |
-| GDPVal-AA v2             |               |                                  |    1769 |   1861 |      1853 |
+| HLE (w/ tools)           |          55.3 |                                  |    62.5 |   64.7 |      65.0 |
+| Terminal Bench 2.1       |          84.3 |                                  |    88.2 |  *89.1 |     *91.4 |
+| NL2Repo                  |             — |                                  |    58.0 |      — |         — |
+| DeepSWE v1.1             |          63.4 |                                  |    66.9 |   68.8 |      67.4 |
+| Agents' Last Exam        |          26.3 |                                  |    28.5 |   31.6 |         — |
+| AutomationBench (Public) |          48.8 |                                  |    48.2 |   50.3 |         — |
+| GDPVal-AA v2             |          1773 |                                  |    1769 |   1861 |      1853 |
+
+\* Terminal Bench 2.1 figures for Opus-5 and Fable 5.1 are independently measured by a third party (Artificial Analysis, Terminus 2 harness, pass@1 averaged over 3 repeats); no official entries exist.
 
 ### 2. Speed and token efficiency
 
@@ -202,9 +204,7 @@ J-Space has progressed through:
 
 The V3.7 package contains one entry, nine focused modules, four supporting references, an optional runtime controller, an authoring-time verifier, standard-library regression tests, three-platform CI, Apache-2.0 licensing, and machine-readable citation metadata.
 
-V3.7's problem-model routing incorporates the pull request opened by [@lanting200](https://github.com/lanting200), including commit contributions from [@afeer123](https://github.com/afeer123).
-
-V3.7.3's decline-message fix and ledger-restatement note respond to the issues opened by [@raelldottin](https://github.com/raelldottin) and [@menoxz](https://github.com/menoxz).
+V3.7's problem-model routing incorporates the pull request opened by [@lanting200](https://github.com/lanting200), the decline-message fix and ledger-restatement note respond to the issues opened by [@raelldottin](https://github.com/raelldottin) and [@menoxz](https://github.com/menoxz), and the release includes commit contributions from [@afeer123](https://github.com/afeer123).
 
 ## License
 
