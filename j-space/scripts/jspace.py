@@ -531,14 +531,16 @@ def mode_note(book, args):
             refused.append(
                 (
                     "a checkpoint names no verifier — coverage alone is not evidence.",
-                    '--by "unit tests over all files and edge inputs"',
+                    'received --by "%s" — no verifier is named; '
+                    'example: --by "unit tests over all files and edge inputs"' % args.by,
                 )
             )
         elif not COVERAGE.search(args.by):
             refused.append(
                 (
                     INVARIANTS[5],
-                    '--by "brute force, n ≤ 6, including empty and maximum"',
+                    'received --by "%s" — a verifier is named but its coverage is not; '
+                    'example: --by "brute force, n ≤ 6, including empty and maximum"' % args.by,
                 )
             )
         else:

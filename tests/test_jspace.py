@@ -363,6 +363,102 @@ class JSpaceControllerTests(unittest.TestCase):
         )
         self.assertEqual(manual.returncode, 0, manual.stdout + manual.stderr)
 
+    def test_declines_echo_the_received_evidence_and_mark_examples(self):
+        self.open_ledger()
+        coverage_gap = self.run_controller(
+            "note",
+            "--check",
+            "parser preserves state",
+            "--by",
+            "regression tests on the parser",
+        )
+        self.assertEqual(
+            coverage_gap.returncode, 2, coverage_gap.stdout + coverage_gap.stderr
+        )
+        self.assertIn('received --by "regression tests on the parser"', coverage_gap.stdout)
+        self.assertIn("example: --by", coverage_gap.stdout)
+
+        verifier_gap = self.run_controller(
+            "note",
+            "--check",
+            "helper is pure",
+            "--by",
+            "all inputs and both boundaries",
+        )
+        self.assertEqual(
+            verifier_gap.returncode, 2, verifier_gap.stdout + verifier_gap.stderr
+        )
+        self.assertIn('received --by "all inputs and both boundaries"', verifier_gap.stdout)
+        self.assertIn("example: --by", verifier_gap.stdout)
+
+    def test_checkpoint_evidence_is_not_contaminated_across_invocations(self):
+        """Distinct verifiers stay isolated across history, seams, and the close path."""
+        self.open_ledger()
+        a = self.run_controller(
+            "note",
+            "--check",
+            "checkpoint A",
+            "--by",
+            "unit tests over all files and edge inputs",
+        )
+        self.assertEqual(a.returncode, 0, a.stdout + a.stderr)
+
+        self.history.parent.mkdir(exist_ok=True)
+        self.history.write_text(
+            json.dumps(
+                [
+                    {
+                        "t": int(time.time()) - 3600,
+                        "next": "brute force, n ≤ 6, including empty and maximum",
+                        "verified": 99,
+                        "open": 99,
+                    }
+                ]
+            ),
+            encoding="utf-8",
+        )
+
+        b = self.run_controller(
+            "note",
+            "--check",
+            "checkpoint B",
+            "--by",
+            "manual review of each changed section",
+        )
+        self.assertEqual(b.returncode, 0, b.stdout + b.stderr)
+
+        seam = self.run_controller("seam")
+        self.assertEqual(seam.returncode, 0, seam.stdout + seam.stderr)
+        opened = self.run_controller(
+            "note",
+            "--open",
+            "Is the ledger stable?",
+            "--settled-by",
+            "test over all inputs",
+        )
+        self.assertEqual(opened.returncode, 0, opened.stdout + opened.stderr)
+        closed = self.run_controller(
+            "note",
+            "--close",
+            "1",
+            "--check",
+            "ledger stable",
+            "--by",
+            "diff against the previous seam, every section",
+        )
+        self.assertEqual(closed.returncode, 0, closed.stdout + closed.stderr)
+
+        ledger = self.ledger.read_text(encoding="utf-8")
+        rows = {
+            tag: next(line for line in ledger.splitlines() if tag in line)
+            for tag in ("checkpoint A", "checkpoint B", "ledger stable")
+        }
+        self.assertIn("manual review of each changed section", rows["checkpoint B"])
+        self.assertNotIn("unit tests over all files", rows["checkpoint B"])
+        self.assertNotIn("brute force", rows["checkpoint B"])
+        self.assertNotIn("brute force", rows["ledger stable"])
+        self.assertNotIn("manual review", rows["ledger stable"])
+
     def test_ship_skips_markdown_headings_but_checks_claim_lines(self):
         headings = self.run_controller(
             "ship",
