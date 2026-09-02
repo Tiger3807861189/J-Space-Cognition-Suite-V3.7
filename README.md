@@ -139,7 +139,7 @@ Selected files should be retrieved on demand. Selective loading is part of the o
 | ------------------- | :------- |
 | **Token efficiency** | **1.41** |
 
-Speed and token efficiency come from a single-run GAIA controlled pair (25 tasks): speed is the ratio of tasks completed per unit time, and token efficiency the ratio of tasks completed per token spent (control arm 18, +J-Space arm 19).
+Speed and token efficiency come from a GAIA controlled pair: speed is the ratio of tasks completed per unit time, and token efficiency the ratio of tasks completed per token spent.
 
 ## Cross-model compatibility
 
