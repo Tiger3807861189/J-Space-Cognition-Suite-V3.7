@@ -30,7 +30,7 @@ inside, decodable on demand.
   intermediate **spider** lights up mid-network. Swap it for **ant** and the answer changes
   from 8 to 6. The second step reads its input from the workspace. Intermediates are
   load-bearing, not decorative.
-- "What colour is the planet fourth from the sun?" reads out as **colour**, then **Mars**,
+- "What color is the planet fourth from the sun?" reads out as **color**, then **Mars**,
   then **red**. Arithmetic separates the same way: **21 → 42 → 49** for (4+17)×2+7. The
   order is the computation.
 - Planning ahead is literal. Writing a rhyming couplet, the chosen rhyme — **fight** — sits

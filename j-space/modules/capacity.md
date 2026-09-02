@@ -158,7 +158,8 @@ Next:      the single next action. Never empty.
 4. **`Next` is never empty.** A ledger without a next action is a ledger you have stopped
    using.
 5. **No filesystem? The ledger lives in the conversation.** Restate the five lines at each
-   seam. Same discipline, different medium.
+   seam, carrying each `closes: ?NN` suffix with its row — a number's retirement is recorded
+   only there. Same discipline, different medium.
 
 ### FOLD A SUB-TASK — bounded excursions
 

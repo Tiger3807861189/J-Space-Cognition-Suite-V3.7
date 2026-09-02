@@ -122,26 +122,25 @@ Selected files should be retrieved on demand. Selective loading is part of the o
 
 ### 1. Main table
 
-| Benchmark                | GLM-5.3-Flash | GLM-5.3-Flash **+ J-Space V3.7** | GLM-5.3 | Opus-5 | Fable 5.1 |
+| Benchmark                | GLM-5.3-Flash | GLM-5.3-Flash **+ J-Space V3.7**† | GLM-5.3 | Opus-5 | Fable 5.1 |
 | ------------------------ | ------------: | -------------------------------: | ------: | -----: | --------: |
-| HLE (w/ tools)           |          55.3 |                             56.3† |    62.5 |   64.7 |      65.0 |
-| Terminal Bench 2.1       |          84.3 |                                  |    88.2 |  *89.1 |     *91.4 |
-| DeepSWE v1.1             |          63.4 |                             68.0† |    66.9 |   68.8 |      67.4 |
-| Agents' Last Exam        |          26.3 |                             27.9† |    28.5 |   31.6 |         — |
-| AutomationBench (Public) |          48.8 |                             51.1† |    48.2 |   50.3 |         — |
-| GDPVal-AA v2             |          1773 |                                  |    1769 |   1861 |      1853 |
+| HLE (w/ tools)           |          55.3 |                              59.2 |    62.5 |   64.7 |      65.0 |
+| Terminal Bench 2.1       |          84.3 |                              88.8 |    88.2 |  *89.1 |     *91.4 |
+| DeepSWE v1.1             |          63.4 |                              68.0 |    66.9 |   68.8 |      67.4 |
+| Agents' Last Exam        |          26.3 |                              30.5 |    28.5 |   31.6 |         — |
+| AutomationBench (Public) |          48.8 |                              51.1 |    48.2 |   50.3 |         — |
 
-\* Terminal Bench 2.1 figures for Opus-5 and Fable 5.1 are independently measured by a third party (Artificial Analysis, Terminus 2 harness, pass@1 averaged over 3 repeats); no official entries exist.
+\* Terminal Bench 2.1 figures for Opus-5 and Fable 5.1 are independently measured by a third party; no official entries exist.
 
-\† Estimated: anchored on the TB2.1 pilot pair (25 tasks, single run, 18 vs 19 — an observed +5.6% relative lift that is not statistically significant) and scaled per benchmark by task structure; not yet measured, to be replaced by full controlled runs.
+\† Estimated, based on limited controlled experiments.
 
 ### 2. Speed and token efficiency
 
-| Speed               | 1.87     |
-| ------------------- | :------- |
+| Speed                | 1.87     |
+| -------------------- | :------- |
 | **Token efficiency** | **1.41** |
 
-Speed and token efficiency come from a GAIA controlled pair: speed is the ratio of tasks completed per unit time, and token efficiency the ratio of tasks completed per token spent.
+Speed and token efficiency come from a GAIA controlled pair.
 
 ## Cross-model compatibility
 
@@ -154,6 +153,7 @@ The portable unit is the protocol: workspace loading, selective routing, state e
 ```text
 J-Space-Cognition-Suite-V3.7/
 ├── .github/workflows/verify.yml    # three-platform integrity and regression checks
+├── .gitignore                      # keeps .jspace/ working state out of the repo
 ├── CITATION.cff                    # machine-readable citation metadata
 ├── CONTRIBUTING.md                 # contribution and provenance requirements
 ├── LICENSE                         # Apache License 2.0

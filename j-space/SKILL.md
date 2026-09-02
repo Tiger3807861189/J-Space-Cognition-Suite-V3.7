@@ -268,4 +268,5 @@ Short tasks: it has nothing for you. Do not run it.
 
 Every one of its behaviours has a hand-executable equivalent in the modules. No shell, no
 Python, no filesystem — nothing here is lost. The ledger lives in the conversation instead,
-restated at each seam. The page was never the point. Re-reading was.
+restated at each seam, each `closes: ?NN` suffix carried with its row. The page was never the
+point. Re-reading was.

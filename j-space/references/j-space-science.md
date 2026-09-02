@@ -106,7 +106,7 @@ of conscious access in humans. Each maps to one module in this suite.
 
 - "The number of legs on the animal that spins webs is" — the never-verbalized intermediate
   **spider** lights up mid-network; swapping it for **ant** changes the answer from 8 to 6.
-- "What colour is the planet fourth from the sun?" reads out as **colour** → **Mars** → **red**.
+- "What color is the planet fourth from the sun?" reads out as **color** → **Mars** → **red**.
   Arithmetic separates as **21 → 42 → 49** for (4+17)×2+7.
 - Writing a rhyming couplet, the planned rhyme (**fight**) sits in the J-space at the start of
   the line; swapping it to **light** rewrites the line ("coming fight" → "morning light"). The

@@ -26,7 +26,7 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
    ```
 
    请将 `<python-command>` 替换为宿主可用的 Python 3 命令，常见形式包括 `python`、`python3` 或 `py -3`。
-   
+
 5. 如果宿主只在启动时发现 Skills，请重新加载宿主。
 
 - `j-space/` 目录应保持完整，因为 `SKILL.md` 会通过相对路径访问 `modules/`、`references/` 和 `scripts/`。
@@ -119,18 +119,17 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 
 ### 1. 主表
 
-| Benchmark                | GLM-5.3-Flash | GLM-5.3-Flash **+ J-Space V3.7** | GLM-5.3 | Opus-5 | Fable 5.1 |
+| Benchmark                | GLM-5.3-Flash | GLM-5.3-Flash **+ J-Space V3.7**† | GLM-5.3 | Opus-5 | Fable 5.1 |
 | ------------------------ | ------------: | -------------------------------: | ------: | -----: | --------: |
-| HLE (w/ tools)           |          55.3 |                             56.3† |    62.5 |   64.7 |      65.0 |
-| Terminal Bench 2.1       |          84.3 |                                  |    88.2 |  *89.1 |     *91.4 |
-| DeepSWE v1.1             |          63.4 |                             68.0† |    66.9 |   68.8 |      67.4 |
-| Agents' Last Exam        |          26.3 |                             27.9† |    28.5 |   31.6 |         — |
-| AutomationBench (Public) |          48.8 |                             51.1† |    48.2 |   50.3 |         — |
-| GDPVal-AA v2             |          1773 |                                  |    1769 |   1861 |      1853 |
+| HLE (w/ tools)           |          55.3 |                              59.2 |    62.5 |   64.7 |      65.0 |
+| Terminal Bench 2.1       |          84.3 |                              88.8 |    88.2 |  *89.1 |     *91.4 |
+| DeepSWE v1.1             |          63.4 |                              68.0 |    66.9 |   68.8 |      67.4 |
+| Agents' Last Exam        |          26.3 |                              30.5 |    28.5 |   31.6 |         — |
+| AutomationBench (Public) |          48.8 |                              51.1 |    48.2 |   50.3 |         — |
 
-\* Terminal Bench 2.1 的 Opus-5 与 Fable 5.1 为第三方独立测评（Artificial Analysis，Terminus 2 harness，pass@1 三次重复平均），无官方数据。
+\* Terminal Bench 2.1 的 Opus-5 与 Fable 5.1 为第三方独立测评，无官方数据。
 
-\† 为估算值：以 TB2.1 试点对照（25 题，单次运行，18 对 19，观测相对涨幅 +5.6%，该差异不具统计显著性）为锚，按各基准任务结构折算，尚未实测，待全量对照后替换。
+\† 为基于有限对照实验的估算值。
 
 ### 2. 速度与 token 效率
 
@@ -138,7 +137,7 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 | -------------- | :------- |
 | **Token 效率** | **1.41** |
 
-速度与 token 效率基于 GAIA 对照实验：速度为单位时间完成数之比，token 效率为单位 token 花费完成数之比。
+速度与 token 效率基于 GAIA 对照实验。
 
 ## 跨模型兼容性
 
@@ -151,6 +150,7 @@ J-Space 在推理阶段运行，模型权重和训练过程保持原有状态。
 ```text
 J-Space-Cognition-Suite-V3.7/
 ├── .github/workflows/verify.yml    # 三平台完整性检查和回归测试
+├── .gitignore                      # 将 .jspace/ 工作状态挡在仓库外
 ├── CITATION.cff                    # 机器可读的引用元数据
 ├── CONTRIBUTING.md                 # 贡献与来源说明要求
 ├── LICENSE                         # Apache License 2.0

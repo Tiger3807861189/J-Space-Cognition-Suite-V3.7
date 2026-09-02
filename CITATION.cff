@@ -27,5 +27,4 @@ abstract: >-
   A model-agnostic inference-time control suite for deep reasoning,
   long-horizon work, tool use, verification, and recovery. Based on
   Anthropic's J-space global workspace research. Licensed under
-  Apache License 2.0. See the companion report at
-  https://github.com/Tiger3807861189/DeepSeek-V4-J-Space-Capability-Realization-Report
+  Apache License 2.0.
