@@ -191,6 +191,7 @@ using only symbols from the table above.
    Ledger-controller arguments are the narrow exception and stay in the labelled ledger
    register.
 2. The switch is total. No stray symbols, no half-compressed sentences in outward text.
+   `✓` and `✗` in an ordinary checklist or summary are writing, not notation.
 3. Run it **at every seam**, not once before delivery. Over a long agentic run the compressed
    register does not stay politely inside — it seeps outward, and you will be the last to
    notice.
