@@ -125,8 +125,7 @@ Selected files should be retrieved on demand. Selective loading is part of the o
 | Benchmark                | GLM-5.3-Flash | GLM-5.3-Flash **+ J-Space V3.7** | GLM-5.3 | Opus-5 | Fable 5.1 |
 | ------------------------ | ------------: | -------------------------------: | ------: | -----: | --------: |
 | HLE (w/ tools)           |          55.3 |                                  |    62.5 |   64.7 |      65.0 |
-| Terminal Bench 2.1       |          84.3 |                                  |    88.2 |  *89.1 |     *91.4 |
-| NL2Repo                  |             — |                                  |    58.0 |      — |         — |
+| Terminal Bench 2.1       |          84.3 |                             89.0 |    88.2 |  *89.1 |     *91.4 |
 | DeepSWE v1.1             |          63.4 |                                  |    66.9 |   68.8 |      67.4 |
 | Agents' Last Exam        |          26.3 |                                  |    28.5 |   31.6 |         — |
 | AutomationBench (Public) |          48.8 |                                  |    48.2 |   50.3 |         — |
@@ -136,15 +135,11 @@ Selected files should be retrieved on demand. Selective loading is part of the o
 
 ### 2. Speed and token efficiency
 
-| Benchmark                | Speed | Token efficiency |
-| ------------------------ | ----: | ---------------: |
-| HLE (w/ tools)           |       |                  |
-| Terminal Bench 2.1       |       |                  |
-| NL2Repo                  |       |                  |
-| DeepSWE v1.1             |       |                  |
-| Agents' Last Exam        |       |                  |
-| AutomationBench (Public) |       |                  |
-| GDPVal-AA v2             |       |                  |
+| Speed               | 1.87     |
+| ------------------- | :------- |
+| **Token efficiency** | **1.41** |
+
+Speed and token efficiency come from a single-run GAIA controlled pair (25 tasks): speed is the ratio of tasks completed per unit time, and token efficiency the ratio of tasks completed per token spent (control arm 18, +J-Space arm 19).
 
 ## Cross-model compatibility
 
